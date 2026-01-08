@@ -3,50 +3,94 @@ Moduł wykresów do monitorowania zdrowia
 """
 
 try:
-    from matplotlib import pyplot as plt
-    from kivy.garden.matplotlib import FigureCanvasKivyAgg
+    from kivy_garden.graph import Graph, MeshLinePlot
+    from kivy.graphics import Color
 
     CHARTS_AVAILABLE = True
 except ImportError:
     CHARTS_AVAILABLE = False
-    print("Uwaga: Wykresy niedostępne (brak matplotlib lub garden.matplotlib)")
+    print("Uwaga: Wykresy niedostępne (brak kivy_garden.graph)")
 
 
 def weight_chart(data):
-    if not CHARTS_AVAILABLE:
+    if not CHARTS_AVAILABLE or not data:
         return None
 
     values = [v for v, _ in data]
-    dates = [d[:10] for _, d in data]
+    min_val = min(values)
+    max_val = max(values)
 
-    fig, ax = plt.subplots()
-    ax.plot(dates, values, marker="o")
-    ax.set_title("Trend wagi")
-    ax.set_ylabel("kg")
-    ax.set_xlabel("Data")
-    ax.grid(True)
+    # Wykres wagi - optymalizowany dla Androida
+    graph = Graph(
+        xlabel="Pomiary",
+        ylabel="Waga (kg)",
+        x_ticks_minor=0,
+        x_ticks_major=max(1, len(data) // 5),
+        y_ticks_major=5,
+        y_grid_label=True,
+        x_grid_label=True,
+        padding=10,
+        x_grid=True,
+        y_grid=True,
+        xmin=0,
+        xmax=len(data),
+        ymin=min_val - 5,
+        ymax=max_val + 5,
+        label_options={"color": [0, 0, 0, 1], "bold": True},
+        background_color=[1, 1, 1, 1],
+        border_color=[0.2, 0.2, 0.2, 1],
+    )
 
-    fig.autofmt_xdate()
+    # Dane do wykresu - grubsza linia
+    plot = MeshLinePlot(color=[0.2, 0.7, 0.3, 1])
+    plot.points = [(i, v) for i, v in enumerate(values)]
+    graph.add_plot(plot)
 
-    return FigureCanvasKivyAgg(fig)
+    return graph
 
 
 def pressure_chart(data):
-    if not CHARTS_AVAILABLE:
+    if not CHARTS_AVAILABLE or not data:
         return None
 
-    sys = [s for s, _, _ in data]
-    dia = [d for _, d, _ in data]
-    dates = [dt[:10] for _, _, dt in data]
+    # Wykres ciśnienia - optymalizowany dla Androida
+    sys_values = [s for s, _, _ in data]
+    dia_values = [d for _, d, _ in data]
 
-    fig, ax = plt.subplots()
-    ax.plot(dates, sys, label="Skurczowe")
-    ax.plot(dates, dia, label="Rozkurczowe")
-    ax.set_title("Trend ciśnienia")
-    ax.set_ylabel("mmHg")
-    ax.legend()
-    ax.grid(True)
+    all_values = sys_values + dia_values
+    min_val = min(all_values)
+    max_val = max(all_values)
 
-    fig.autofmt_xdate()
+    graph = Graph(
+        xlabel="Pomiary",
+        ylabel="Ciśnienie (mmHg)",
+        x_ticks_minor=0,
+        x_ticks_major=max(1, len(data) // 5),
+        y_ticks_major=20,
+        y_grid_label=True,
+        x_grid_label=True,
+        padding=10,
+        x_grid=True,
+        y_grid=True,
+        xmin=0,
+        xmax=len(data),
+        ymin=min_val - 10,
+        ymax=max_val + 10,
+        label_options={"color": [0, 0, 0, 1], "bold": True},
+        background_color=[1, 1, 1, 1],
+        border_color=[0.2, 0.2, 0.2, 1],
+    )
 
-    return FigureCanvasKivyAgg(fig)
+    # Skurczowe (czerwone) - grubsza linia
+    plot_sys = MeshLinePlot(color=[1, 0.2, 0.2, 1])
+    plot_sys.points = [(i, s) for i, s in enumerate(sys_values)]
+    graph.add_plot(plot_sys)
+
+    # Rozkurczowe (niebieskie) - grubsza linia
+    plot_dia = MeshLinePlot(color=[0.2, 0.4, 1, 1])
+    plot_dia.points = [(i, d) for i, d in enumerate(dia_values)]
+    graph.add_plot(plot_dia)
+
+    return graph
+
+    return graph

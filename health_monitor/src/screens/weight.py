@@ -48,16 +48,10 @@ class WeightScreen(Screen):
             show_error(str(e))
 
     def show_chart(self):
-        db = Database()
-        data = db.get_weights(limit=30)
+        """Przekieruj na ekran wykresu"""
+        from kivy.app import App
 
-        if not data:
-            show_error("Brak danych do wykresu")
-            return
-
-        chart = weight_chart(data[::-1])
-        self.ids.chart_box.clear_widgets()
-        self.ids.chart_box.add_widget(chart)
+        App.get_running_app().root.current = "weight_chart"
 
     def save_weight(self, value):
         try:

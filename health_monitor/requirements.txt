@@ -1,6 +1,5 @@
 kivy>=2.0.0
 matplotlib
 reportlab
-pysqlcipher3
-kivy-garden
-# Uwaga: garden.matplotlib instaluj przez: garden install matplotlib
+kivy_garden.graph
+# Uwaga: pysqlcipher3 (opcjonalne szyfrowanie) - wymaga kompilatora C na Windows

@@ -139,12 +139,8 @@
             background_color: 0.9, 0.6, 0.5, 1
             on_press: root.export_pdf()            
 
-        BoxLayout:
-            id: chart_box
-            size_hint_y: 0.6
-
         RecycleView:
-            size_hint_y: 0.4
+            size_hint_y: 1.0
             viewclass: "Label"
             data: root.weights
 
@@ -197,6 +193,11 @@
                 dia.text = ""
 
         Button:
+            text: "� Pokaż wykres"
+            background_color: 0.6, 0.7, 0.9, 1
+            on_press: root.show_chart()
+
+        Button:
             text: "📄 Eksport CSV"
             background_color: 0.9, 0.8, 0.5, 1
             on_press: root.export_csv()
@@ -205,13 +206,15 @@
             text: "📑 Eksport PDF"
             background_color: 0.9, 0.6, 0.5, 1
             on_press: root.export_pdf()
-                
 
         Label:
             text: "📋 Historia pomiarów"
             color: 0.3, 0.3, 0.3, 1
+            size_hint_y: None
+            height: "30sp"
 
         RecycleView:
+            size_hint_y: 1.0
             viewclass: "Label"
             data: root.pressures
 
@@ -271,5 +274,88 @@
             text: "📥 Przywróć backup"
             background_color: 0.9, 0.7, 0.5, 1
             on_press: root.restore()
+
+
+<WeightChartScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.95, 1, 0.95, 1  # Jasnozielony
+        Rectangle:
+            pos: self.pos
+            size: self.size
     
-           
+    BoxLayout:
+        orientation: "vertical"
+        padding: 10
+        spacing: 10
+
+        Label:
+            text: "📊 Wykres Wagi"
+            font_size: "28sp"
+            bold: True
+            color: 0.2, 0.6, 0.3, 1
+            size_hint_y: None
+            height: "50sp"
+
+        BoxLayout:
+            id: chart_container
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+        Button:
+            text: "🔙 Powrót"
+            background_color: 0.7, 0.7, 0.7, 1
+            font_size: "18sp"
+            size_hint_y: None
+            height: "60sp"
+            on_press: app.root.current = "weight"
+
+
+<PressureChartScreen>:
+    canvas.before:
+        Color:
+            rgba: 1, 0.95, 0.95, 1  # Jasnoróżowy
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    BoxLayout:
+        orientation: "vertical"
+        padding: 10
+        spacing: 10
+
+        Label:
+            text: "📊 Wykres Ciśnienia"
+            font_size: "28sp"
+            bold: True
+            color: 0.8, 0.2, 0.2, 1
+            size_hint_y: None
+            height: "50sp"
+
+        Label:
+            text: "Czerwona = Skurczowe | Niebieska = Rozkurczowe"
+            font_size: "14sp"
+            color: 0.3, 0.3, 0.3, 1
+            size_hint_y: None
+            height: "30sp"
+
+        BoxLayout:
+            id: chart_container
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+        Button:
+            text: "🔙 Powrót"
+            background_color: 0.7, 0.7, 0.7, 1
+            font_size: "18sp"
+            size_hint_y: None
+            height: "60sp"
+            on_press: app.root.current = "pressure"
