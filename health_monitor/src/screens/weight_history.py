@@ -20,12 +20,14 @@ class WeightHistoryScreen(Screen):
         db = Database()
         records = db.get_weights(limit=1000)
 
+        total = len(records)
+
         # Sortuj według preferencji użytkownika
         if self.ascending:
             records = records[::-1]
 
         self.history = []
-        for value, date in records:
+        for idx, (value, date) in enumerate(records):
             level = weight_alert(value)
             color = {
                 AlertLevel.OK: (0.2, 0.8, 0.2, 1),
@@ -33,7 +35,17 @@ class WeightHistoryScreen(Screen):
                 AlertLevel.DANGER: (1, 0.2, 0.2, 1),
             }[level]
 
-            self.history.append({"text": f"{value} kg | {date[:16]}", "color": color})
+            # Numer pomiaru (0 = najstarszy, jak na wykresie)
+            if self.ascending:
+                # Jeśli od najstarszych, idx odpowiada numerowi na wykresie
+                chart_num = idx
+            else:
+                # Jeśli od najnowszych, odwróć numerację
+                chart_num = total - idx - 1
+
+            self.history.append(
+                {"text": f"#{chart_num}: {value} kg | {date[:16]}", "color": color}
+            )
 
     def toggle_sort(self):
         """Zmień kierunek sortowania"""

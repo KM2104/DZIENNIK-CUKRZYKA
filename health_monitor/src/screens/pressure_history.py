@@ -20,12 +20,14 @@ class PressureHistoryScreen(Screen):
         db = Database()
         records = db.get_pressures(limit=1000)
 
+        total = len(records)
+
         # Sortuj według preferencji użytkownika
         if self.ascending:
             records = records[::-1]
 
         self.history = []
-        for sys, dia, date in records:
+        for idx, (sys, dia, date) in enumerate(records):
             level = pressure_alert(sys, dia)
             color = {
                 AlertLevel.OK: (0.2, 0.8, 0.2, 1),
@@ -33,8 +35,19 @@ class PressureHistoryScreen(Screen):
                 AlertLevel.DANGER: (1, 0.2, 0.2, 1),
             }[level]
 
+            # Numer pomiaru (0 = najstarszy, jak na wykresie)
+            if self.ascending:
+                # Jeśli od najstarszych, idx odpowiada numerowi na wykresie
+                chart_num = idx
+            else:
+                # Jeśli od najnowszych, odwróć numerację
+                chart_num = total - idx - 1
+
             self.history.append(
-                {"text": f"{sys}/{dia} mmHg | {date[:16]}", "color": color}
+                {
+                    "text": f"#{chart_num}: {sys}/{dia} mmHg | {date[:16]}",
+                    "color": color,
+                }
             )
 
     def toggle_sort(self):

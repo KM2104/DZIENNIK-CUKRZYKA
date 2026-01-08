@@ -21,38 +21,26 @@ def weight_chart(data):
     min_val = min(values)
     max_val = max(values)
 
-    # Wykres wagi - z datami na osi X
+    # Wykres wagi - z numerami, daty w legendzie
     graph = Graph(
-        xlabel="Data i godzina",
+        xlabel="Pomiar (od najstarszego)",
         ylabel="Waga (kg)",
         x_ticks_minor=0,
-        x_ticks_major=max(1, len(data) // 3),
+        x_ticks_major=max(1, len(data) // 5),
         y_ticks_major=5,
         y_grid_label=True,
         x_grid_label=True,
         padding=15,
         x_grid=True,
         y_grid=True,
-        xmin=-0.5,
-        xmax=len(data) - 0.5,
+        xmin=0,
+        xmax=len(data) - 1,
         ymin=min_val - 5,
         ymax=max_val + 5,
         label_options={"color": [0, 0, 0, 1], "bold": True},
         background_color=[1, 1, 1, 1],
         border_color=[0.2, 0.2, 0.2, 1],
-        x_ticks_angle=45,
     )
-
-    # Ustawienie custom etykiet dla osi X
-    if len(data) <= 10:
-        graph.x_ticks_major = 1
-        graph.xlabel_text = dates
-    else:
-        # Dla większej liczby danych pokazuj co kilka
-        step = max(1, len(data) // 5)
-        graph.xlabel_text = [
-            dates[i] if i % step == 0 else "" for i in range(len(dates))
-        ]
 
     # Dane do wykresu
     plot = MeshLinePlot(color=[0.2, 0.7, 0.3, 1])
@@ -66,46 +54,33 @@ def pressure_chart(data):
     if not CHARTS_AVAILABLE or not data:
         return None
 
-    # Wykres ciśnienia - z datami na osi X
+    # Wykres ciśnienia - z numerami pomiarów
     sys_values = [s for s, _, _ in data]
     dia_values = [d for _, d, _ in data]
-    dates = [dt[5:16] for _, _, dt in data]  # Format: MM-DD HH:MM
 
     all_values = sys_values + dia_values
     min_val = min(all_values)
     max_val = max(all_values)
 
     graph = Graph(
-        xlabel="Data i godzina",
+        xlabel="Pomiar (od najstarszego)",
         ylabel="Ciśnienie (mmHg)",
         x_ticks_minor=0,
-        x_ticks_major=max(1, len(data) // 3),
+        x_ticks_major=max(1, len(data) // 5),
         y_ticks_major=20,
         y_grid_label=True,
         x_grid_label=True,
         padding=15,
         x_grid=True,
         y_grid=True,
-        xmin=-0.5,
-        xmax=len(data) - 0.5,
+        xmin=0,
+        xmax=len(data) - 1,
         ymin=min_val - 10,
         ymax=max_val + 10,
         label_options={"color": [0, 0, 0, 1], "bold": True},
         background_color=[1, 1, 1, 1],
         border_color=[0.2, 0.2, 0.2, 1],
-        x_ticks_angle=45,
     )
-
-    # Ustawienie custom etykiet dla osi X
-    if len(data) <= 10:
-        graph.x_ticks_major = 1
-        graph.xlabel_text = dates
-    else:
-        # Dla większej liczby danych pokazuj co kilka
-        step = max(1, len(data) // 5)
-        graph.xlabel_text = [
-            dates[i] if i % step == 0 else "" for i in range(len(dates))
-        ]
 
     # Skurczowe (czerwone)
     plot_sys = MeshLinePlot(color=[1, 0.2, 0.2, 1])

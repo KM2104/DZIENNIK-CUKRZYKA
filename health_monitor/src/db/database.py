@@ -2,26 +2,14 @@
 Zarządzanie bazą danych
 """
 
+import sqlite3
 from datetime import datetime
 from utils.paths import get_db_path
-
-# Próba użycia pysqlcipher3 (szyfrowanie), fallback do sqlite3
-try:
-    from pysqlcipher3 import dbapi2 as sqlite3
-
-    USE_ENCRYPTION = True
-except ImportError:
-    import sqlite3
-
-    USE_ENCRYPTION = False
-    print("Uwaga: Używam sqlite3 bez szyfrowania (pysqlcipher3 niedostępny)")
 
 
 class Database:
     def __init__(self):
         self.conn = sqlite3.connect(get_db_path())
-        if USE_ENCRYPTION:
-            self.conn.execute("PRAGMA key='twoj_super_tajny_klucz'")
         self.create_tables()
 
     def create_tables(self):

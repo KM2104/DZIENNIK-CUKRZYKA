@@ -2,4 +2,3 @@ kivy>=2.0.0
 matplotlib
 reportlab
 kivy_garden.graph
-# Uwaga: pysqlcipher3 (opcjonalne szyfrowanie) - wymaga kompilatora C na Windows
