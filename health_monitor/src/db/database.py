@@ -38,6 +38,28 @@ class Database:
 
         cur.execute(
             """
+        CREATE TABLE IF NOT EXISTS heartrate (
+            id INTEGER PRIMARY KEY,
+            value INTEGER,
+            date TEXT
+        )
+        """
+        )
+
+        cur.execute(
+            """
+        CREATE TABLE IF NOT EXISTS glucose (
+            id INTEGER PRIMARY KEY,
+            value INTEGER,
+            date TEXT,
+            measurement_time TEXT,
+            meal_timing TEXT
+        )
+        """
+        )
+
+        cur.execute(
+            """
         CREATE TABLE IF NOT EXISTS settings (
             key TEXT PRIMARY KEY,
             value TEXT
@@ -46,6 +68,25 @@ class Database:
         )
 
         self.conn.commit()
+
+        # Migracja: Dodaj brakujące kolumny do istniejącej tabeli glucose
+        self._migrate_glucose_table()
+
+    def _migrate_glucose_table(self):
+        """Dodaje nowe kolumny do tabeli glucose jeśli ich nie ma"""
+        cur = self.conn.cursor()
+
+        # Sprawdź czy kolumny measurement_time i meal_timing istnieją
+        cur.execute("PRAGMA table_info(glucose)")
+        columns = [row[1] for row in cur.fetchall()]
+
+        if "measurement_time" not in columns:
+            cur.execute("ALTER TABLE glucose ADD COLUMN measurement_time TEXT")
+            self.conn.commit()
+
+        if "meal_timing" not in columns:
+            cur.execute("ALTER TABLE glucose ADD COLUMN meal_timing TEXT")
+            self.conn.commit()
 
     def add_weight(self, value):
         self.conn.execute(
@@ -58,6 +99,22 @@ class Database:
         self.conn.execute(
             "INSERT INTO pressure (systolic, diastolic, date) VALUES (?, ?, ?)",
             (sys, dia, datetime.now().isoformat()),
+        )
+        self.conn.commit()
+
+    def add_heartrate(self, value):
+        self.conn.execute(
+            "INSERT INTO heartrate (value, date) VALUES (?, ?)",
+            (value, datetime.now().isoformat()),
+        )
+        self.conn.commit()
+
+    def add_glucose(self, value, measurement_time=None, meal_timing=""):
+        if measurement_time is None:
+            measurement_time = datetime.now().isoformat()
+        self.conn.execute(
+            "INSERT INTO glucose (value, date, measurement_time, meal_timing) VALUES (?, ?, ?, ?)",
+            (value, datetime.now().isoformat(), measurement_time, meal_timing),
         )
         self.conn.commit()
 
@@ -80,6 +137,32 @@ class Database:
             """
             SELECT systolic, diastolic, date
             FROM pressure
+            ORDER BY date DESC
+            LIMIT ?
+        """,
+            (limit,),
+        )
+        return cur.fetchall()
+
+    def get_heartrates(self, limit=100):
+        cur = self.conn.cursor()
+        cur.execute(
+            """
+            SELECT value, date
+            FROM heartrate
+            ORDER BY date DESC
+            LIMIT ?
+        """,
+            (limit,),
+        )
+        return cur.fetchall()
+
+    def get_glucose(self, limit=100):
+        cur = self.conn.cursor()
+        cur.execute(
+            """
+            SELECT value, date, measurement_time, meal_timing
+            FROM glucose
             ORDER BY date DESC
             LIMIT ?
         """,

@@ -37,3 +37,26 @@ def validate_pressure(sys: str, dia: str) -> tuple[int, int]:
 
     return systolic, diastolic
 
+
+def validate_heartrate(value: str) -> int:
+    try:
+        heartrate = int(value)
+    except ValueError:
+        raise ValidationError("Tętno musi być liczbą całkowitą")
+
+    if heartrate <= 0 or heartrate > 300:
+        raise ValidationError("Nieprawidłowa wartość tętna (0-300 bpm)")
+
+    return heartrate
+
+
+def validate_glucose(value: str) -> int:
+    try:
+        glucose = int(value)
+    except ValueError:
+        raise ValidationError("Glukoza musi być liczbą całkowitą")
+
+    if glucose <= 0 or glucose > 600:
+        raise ValidationError("Nieprawidłowa wartość glukozy (0-600 mg/dL)")
+
+    return glucose

@@ -16,10 +16,19 @@ def weight_chart(data):
     if not CHARTS_AVAILABLE or not data:
         return None
 
+    # Potrzebujemy co najmniej 2 punkty dla wykresu
+    if len(data) < 2:
+        return None
+
     values = [v for v, _ in data]
     dates = [d[5:16] for _, d in data]  # Format: MM-DD HH:MM
     min_val = min(values)
     max_val = max(values)
+
+    # Jeśli wszystkie wartości są takie same, dodaj margines
+    if min_val == max_val:
+        min_val -= 5
+        max_val += 5
 
     # Wykres wagi - z numerami, daty w legendzie
     graph = Graph(
@@ -54,6 +63,10 @@ def pressure_chart(data):
     if not CHARTS_AVAILABLE or not data:
         return None
 
+    # Potrzebujemy co najmniej 2 punkty dla wykresu
+    if len(data) < 2:
+        return None
+
     # Wykres ciśnienia - z numerami pomiarów
     sys_values = [s for s, _, _ in data]
     dia_values = [d for _, d, _ in data]
@@ -61,6 +74,11 @@ def pressure_chart(data):
     all_values = sys_values + dia_values
     min_val = min(all_values)
     max_val = max(all_values)
+
+    # Jeśli wszystkie wartości są takie same, dodaj margines
+    if min_val == max_val:
+        min_val -= 10
+        max_val += 10
 
     graph = Graph(
         xlabel="Pomiar (od najstarszego)",
@@ -93,5 +111,95 @@ def pressure_chart(data):
     graph.add_plot(plot_dia)
 
     return graph
+
+
+def heartrate_chart(data):
+    if not CHARTS_AVAILABLE or not data:
+        return None
+
+    # Potrzebujemy co najmniej 2 punkty dla wykresu
+    if len(data) < 2:
+        return None
+
+    values = [v for v, _ in data]
+    min_val = min(values)
+    max_val = max(values)
+
+    # Jeśli wszystkie wartości są takie same, dodaj margines
+    if min_val == max_val:
+        min_val -= 10
+        max_val += 10
+
+    # Wykres tętna - z numerami
+    graph = Graph(
+        xlabel="Pomiar (od najstarszego)",
+        ylabel="Tętno (bpm)",
+        x_ticks_minor=0,
+        x_ticks_major=max(1, len(data) // 5),
+        y_ticks_major=10,
+        y_grid_label=True,
+        x_grid_label=True,
+        padding=15,
+        x_grid=True,
+        y_grid=True,
+        xmin=0,
+        xmax=len(data) - 1,
+        ymin=min_val - 10,
+        ymax=max_val + 10,
+        label_options={"color": [0, 0, 0, 1], "bold": True},
+        background_color=[1, 1, 1, 1],
+        border_color=[0.2, 0.2, 0.2, 1],
+    )
+
+    # Dane do wykresu
+    plot = MeshLinePlot(color=[0.8, 0.3, 0.5, 1])
+    plot.points = [(i, v) for i, v in enumerate(values)]
+    graph.add_plot(plot)
+
+    return graph
+
+
+def glucose_chart(data):
+    if not CHARTS_AVAILABLE or not data:
+        return None
+
+    # Potrzebujemy co najmniej 2 punkty dla wykresu
+    if len(data) < 2:
+        return None
+
+    values = [v for v, _ in data]
+    min_val = min(values)
+    max_val = max(values)
+
+    # Jeśli wszystkie wartości są takie same, dodaj margines
+    if min_val == max_val:
+        min_val -= 20
+        max_val += 20
+
+    # Wykres glukozy - z numerami
+    graph = Graph(
+        xlabel="Pomiar (od najstarszego)",
+        ylabel="Glukoza (mg/dL)",
+        x_ticks_minor=0,
+        x_ticks_major=max(1, len(data) // 5),
+        y_ticks_major=20,
+        y_grid_label=True,
+        x_grid_label=True,
+        padding=15,
+        x_grid=True,
+        y_grid=True,
+        xmin=0,
+        xmax=len(data) - 1,
+        ymin=min_val - 20,
+        ymax=max_val + 20,
+        label_options={"color": [0, 0, 0, 1], "bold": True},
+        background_color=[1, 1, 1, 1],
+        border_color=[0.2, 0.2, 0.2, 1],
+    )
+
+    # Dane do wykresu
+    plot = MeshLinePlot(color=[0.3, 0.4, 0.8, 1])
+    plot.points = [(i, v) for i, v in enumerate(values)]
+    graph.add_plot(plot)
 
     return graph

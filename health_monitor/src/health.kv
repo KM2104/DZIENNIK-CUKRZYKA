@@ -28,25 +28,31 @@
         Button:
             text: "⚖️ Waga"
             background_color: 0.4, 0.8, 0.6, 1  # Zielony
-            font_size: "18sp"
+            font_size: "22sp"
             on_press: app.root.current = "weight"
 
         Button:
             text: "💓 Ciśnienie"
             background_color: 0.9, 0.5, 0.5, 1  # Koralowy
-            font_size: "18sp"
+            font_size: "22sp"
             on_press: app.root.current = "pressure"
 
         Button:
-            text: "📊 Pokaż wykres"
-            background_color: 0.6, 0.7, 0.9, 1  # Niebieski
-            font_size: "18sp"
-            on_press: root.show_chart()
+            text: "� Tętno"
+            background_color: 0.9, 0.7, 0.8, 1  # Różowy
+            font_size: "22sp"
+            on_press: app.root.current = "heartrate"
 
         Button:
-            text: "⚙️ Ustawienia"
+            text: "🩸 Glukoza"
+            background_color: 0.7, 0.8, 0.9, 1  # Jasnoniebieski
+            font_size: "22sp"
+            on_press: app.root.current = "glucose"
+
+        Button:
+            text: "⚙️ Ustawienia Użytkownika"
             background_color: 0.8, 0.7, 0.9, 1  # Lawendowy
-            font_size: "18sp"
+            font_size: "22sp"
             on_press: app.root.current = "settings"
             
 
@@ -85,7 +91,7 @@
         Button:
             text: "Zaloguj"
             background_color: 0.4, 0.8, 0.6, 1  # Zielony
-            font_size: "18sp"
+            font_size: "20sp"
             on_press: root.check_pin(pin.text)
 
     
@@ -120,37 +126,42 @@
         Button:
             text: "💾 Zapisz"
             background_color: 0.4, 0.8, 0.6, 1
-            font_size: "16sp"
+            font_size: "20sp"
             on_press:
                 root.save_weight(weight_input.text)
                 weight_input.text = ""
-
-        Button:
-            text: "📊 Pokaż wykres"
-            background_color: 0.6, 0.7, 0.9, 1
-            on_press: root.show_chart()
-
-        Button:
-            text: "� Historia pomiarów"
-            background_color: 0.8, 0.6, 0.9, 1
-            font_size: "16sp"
-            on_press: app.root.current = "weight_history"
-
-        Button:
-            text: "📄 Eksport CSV"
-            background_color: 0.9, 0.8, 0.5, 1
-            on_press: root.export_csv()
-
-        Button:
-            text: "📑 Eksport PDF"
-            background_color: 0.9, 0.6, 0.5, 1
-            on_press: root.export_pdf()            
 
         Label:
             text: "Ostatnie 5 pomiarów:"
             size_hint_y: None
             height: "30sp"
-            color: 0.3, 0.3, 0.3, 1
+            color: 0.3, 0.3, 0.3, 1        
+
+        Button:
+            text: "📊 Pokaż wykres"
+            background_color: 0.6, 0.7, 0.9, 1
+            font_size: "20sp"
+            on_press: root.show_chart()
+
+        Button:
+            text: "📋 Historia pomiarów"
+            background_color: 0.8, 0.6, 0.9, 1
+            font_size: "20sp"
+            on_press: app.root.current = "weight_history"
+
+        Button:
+            text: "📄 Eksport CSV"
+            background_color: 0.9, 0.8, 0.5, 1
+            font_size: "20sp"
+            on_press: root.export_csv()
+
+        Button:
+            text: "📑 Eksport PDF"
+            background_color: 0.9, 0.6, 0.5, 1
+            font_size: "20sp"
+            on_press: root.export_pdf()            
+
+
 
         RecycleView:
             size_hint_y: 0.5
@@ -199,38 +210,43 @@
         Button:
             text: "💾 Zapisz"
             background_color: 0.9, 0.5, 0.5, 1
-            font_size: "16sp"
+            font_size: "20sp"
             on_press:
                 root.save_pressure(sys.text, dia.text)
                 sys.text = ""
                 dia.text = ""
-
-        Button:
-            text: "� Pokaż wykres"
-            background_color: 0.6, 0.7, 0.9, 1
-            on_press: root.show_chart()
-
-        Button:
-            text: "📋 Historia pomiarów"
-            background_color: 0.8, 0.6, 0.9, 1
-            font_size: "16sp"
-            on_press: app.root.current = "pressure_history"
-
-        Button:
-            text: "📄 Eksport CSV"
-            background_color: 0.9, 0.8, 0.5, 1
-            on_press: root.export_csv()
-
-        Button:
-            text: "📑 Eksport PDF"
-            background_color: 0.9, 0.6, 0.5, 1
-            on_press: root.export_pdf()
 
         Label:
             text: "Ostatnie 5 pomiarów:"
             color: 0.3, 0.3, 0.3, 1
             size_hint_y: None
             height: "30sp"
+
+        Button:
+            text: "� Pokaż wykres"
+            background_color: 0.6, 0.7, 0.9, 1
+            font_size: "20sp"
+            on_press: root.show_chart()
+
+        Button:
+            text: "📋 Historia pomiarów"
+            background_color: 0.8, 0.6, 0.9, 1
+            font_size: "20sp"
+            on_press: app.root.current = "pressure_history"
+
+        Button:
+            text: "📄 Eksport CSV"
+            background_color: 0.9, 0.8, 0.5, 1
+            font_size: "20sp"
+            on_press: root.export_csv()
+
+        Button:
+            text: "📑 Eksport PDF"
+            background_color: 0.9, 0.6, 0.5, 1
+            font_size: "20sp"
+            on_press: root.export_pdf()
+
+
 
         RecycleView:
             size_hint_y: 0.5
@@ -240,6 +256,7 @@
         Button:
             text: "🔙 Powrót"
             background_color: 0.7, 0.7, 0.7, 1
+            font_size: "20sp"
             on_press: app.root.current = "home"
 
 <SettingsScreen>:
@@ -276,22 +293,25 @@
         Button:
             text: "💾 Zapisz"
             background_color: 0.4, 0.8, 0.6, 1
-            font_size: "16sp"
+            font_size: "20sp"
             on_press: root.save()
 
         Button:
             text: "🔙 Powrót"
             background_color: 0.7, 0.7, 0.7, 1
+            font_size: "20sp"
             on_press: app.root.current = "home"
 
         Button:
             text: "💾 Wykonaj backup"
             background_color: 0.6, 0.7, 0.9, 1
+            font_size: "20sp"
             on_press: root.backup()
 
         Button:
             text: "📥 Przywróć backup"
             background_color: 0.9, 0.7, 0.5, 1
+            font_size: "20sp"
             on_press: root.restore()
 
 
@@ -328,7 +348,7 @@
         Button:
             text: "🔙 Powrót"
             background_color: 0.7, 0.7, 0.7, 1
-            font_size: "18sp"
+            font_size: "20sp"
             size_hint_y: None
             height: "60sp"
             on_press: app.root.current = "weight"
@@ -374,7 +394,7 @@
         Button:
             text: "🔙 Powrót"
             background_color: 0.7, 0.7, 0.7, 1
-            font_size: "18sp"
+            font_size: "20sp"
             size_hint_y: None
             height: "60sp"
             on_press: app.root.current = "pressure"
@@ -404,7 +424,7 @@
         Button:
             text: "🔄 Sortuj: " + ("Od najstarszych ↑" if root.ascending else "Od najnowszych ↓")
             background_color: 0.6, 0.7, 0.9, 1
-            font_size: "16sp"
+            font_size: "20sp"
             size_hint_y: None
             height: "50sp"
             on_press: root.toggle_sort()
@@ -424,7 +444,7 @@
         Button:
             text: "🔙 Powrót"
             background_color: 0.7, 0.7, 0.7, 1
-            font_size: "18sp"
+            font_size: "20sp"
             size_hint_y: None
             height: "60sp"
             on_press: app.root.current = "weight"
@@ -454,7 +474,7 @@
         Button:
             text: "🔄 Sortuj: " + ("Od najstarszych ↑" if root.ascending else "Od najnowszych ↓")
             background_color: 0.6, 0.7, 0.9, 1
-            font_size: "16sp"
+            font_size: "20sp"
             size_hint_y: None
             height: "50sp"
             on_press: root.toggle_sort()
@@ -474,7 +494,432 @@
         Button:
             text: "🔙 Powrót"
             background_color: 0.7, 0.7, 0.7, 1
-            font_size: "18sp"
+            font_size: "20sp"
             size_hint_y: None
             height: "60sp"
             on_press: app.root.current = "pressure"
+
+
+<HeartRateScreen>:
+    canvas.before:
+        Color:
+            rgba: 1, 0.95, 0.97, 1  # Jasnoróżowy
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    BoxLayout:
+        orientation: "vertical"
+        padding: 20
+        spacing: 10
+
+        Label:
+            text: "💗 Tętno"
+            font_size: "24sp"
+            bold: True
+            color: 0.8, 0.3, 0.5, 1
+            size_hint_y: None
+            height: "40sp"
+
+        TextInput:
+            id: heartrate_input
+            hint_text: "Tętno (bpm)"
+            input_filter: "int"
+            background_color: 1, 1, 1, 1
+            font_size: "18sp"
+
+        Button:
+            text: "💾 Zapisz"
+            background_color: 0.9, 0.7, 0.8, 1
+            font_size: "20sp"
+            on_press:
+                root.save_heartrate(heartrate_input.text)
+                heartrate_input.text = ""
+
+        Label:
+            text: "Ostatnie 5 pomiarów:"
+            color: 0.3, 0.3, 0.3, 1
+            size_hint_y: None
+            height: "30sp"
+
+        Button:
+            text: "📊 Pokaż wykres"
+            background_color: 0.6, 0.7, 0.9, 1
+            font_size: "20sp"
+            on_press: root.show_chart()
+
+        Button:
+            text: "📋 Historia pomiarów"
+            background_color: 0.8, 0.6, 0.9, 1
+            font_size: "20sp"
+            on_press: app.root.current = "heartrate_history"
+
+        Button:
+            text: "📄 Eksport CSV"
+            background_color: 0.9, 0.8, 0.5, 1
+            font_size: "20sp"
+            on_press: root.export_csv()
+
+        Button:
+            text: "📑 Eksport PDF"
+            background_color: 0.9, 0.6, 0.5, 1
+            font_size: "20sp"
+            on_press: root.export_pdf()
+
+        RecycleView:
+            size_hint_y: 0.5
+            viewclass: "Label"
+            data: root.heartrates[:5]
+
+        Button:
+            text: "🔙 Powrót"
+            background_color: 0.7, 0.7, 0.7, 1
+            font_size: "20sp"
+            on_press: app.root.current = "home"
+
+
+<GlucoseScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.95, 0.97, 1, 1  # Jasnoniebieski
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    BoxLayout:
+        orientation: "vertical"
+        padding: 20
+        spacing: 10
+
+        Label:
+            text: "🩸 Glukoza"
+            font_size: "24sp"
+            bold: True
+            color: 0.3, 0.4, 0.8, 1
+            size_hint_y: None
+            height: "40sp"
+
+        # Wynik glukozy
+        BoxLayout:
+            size_hint_y: None
+            height: "50sp"
+            spacing: 10
+
+            Label:
+                text: "Wynik:"
+                size_hint_x: 0.3
+                color: 0.3, 0.3, 0.3, 1
+
+            TextInput:
+                id: glucose_input
+                hint_text: "mg/dL"
+                input_filter: "int"
+                background_color: 1, 1, 1, 1
+                font_size: "18sp"
+
+        # Data i czas pomiaru
+        Label:
+            text: "Kiedy wykonano pomiar:"
+            color: 0.3, 0.3, 0.3, 1
+            size_hint_y: None
+            height: "25sp"
+
+        BoxLayout:
+            size_hint_y: None
+            height: "50sp"
+            spacing: 10
+
+            TextInput:
+                id: measurement_date
+                hint_text: "RRRR-MM-DD"
+                background_color: 1, 1, 1, 1
+                font_size: "16sp"
+                size_hint_x: 0.6
+
+            TextInput:
+                id: measurement_time
+                hint_text: "GG:MM"
+                background_color: 1, 1, 1, 1
+                font_size: "16sp"
+                size_hint_x: 0.4
+
+        # Czas od posiłku
+        Label:
+            text: "Czas pomiaru względem posiłku:"
+            color: 0.3, 0.3, 0.3, 1
+            size_hint_y: None
+            height: "25sp"
+
+        BoxLayout:
+            size_hint_y: None
+            height: "50sp"
+            spacing: 5
+
+            Button:
+                text: "Na czczo"
+                background_color: (0.5, 0.8, 0.5, 1) if root.meal_timing == "na czczo" else (0.8, 0.8, 0.8, 1)
+                font_size: "16sp"
+                on_press: root.set_meal_timing("na czczo")
+
+            Button:
+                text: "2h po posiłku"
+                background_color: (0.5, 0.8, 0.5, 1) if root.meal_timing == "2h po posiłku" else (0.8, 0.8, 0.8, 1)
+                font_size: "16sp"
+                on_press: root.set_meal_timing("2h po posiłku")
+
+            Button:
+                text: "Własny"
+                background_color: (0.5, 0.8, 0.5, 1) if root.meal_timing == "własny" else (0.8, 0.8, 0.8, 1)
+                font_size: "16sp"
+                on_press: root.set_meal_timing("własny")
+
+        # Pole na własny czas
+        TextInput:
+            id: custom_timing
+            hint_text: "np. 1h po posiłku, przed snem..."
+            background_color: 1, 1, 1, 1
+            font_size: "16sp"
+            size_hint_y: None
+            height: "40sp"
+            disabled: root.meal_timing != "własny"
+
+        Button:
+            text: "💾 Zapisz"
+            background_color: 0.7, 0.8, 0.9, 1
+            font_size: "20sp"
+            size_hint_y: None
+            height: "60sp"
+            on_press:
+                root.save_glucose(glucose_input.text, measurement_date.text, measurement_time.text, custom_timing.text)
+                glucose_input.text = ""
+
+        Label:
+            text: "Ostatnie 5 pomiarów:"
+            color: 0.3, 0.3, 0.3, 1
+            size_hint_y: None
+            height: "30sp"
+
+        BoxLayout:
+            size_hint_y: None
+            height: "50sp"
+            spacing: 5
+
+            Button:
+                text: "📊 Wykres"
+                background_color: 0.6, 0.7, 0.9, 1
+                font_size: "18sp"
+                on_press: root.show_chart()
+
+            Button:
+                text: "📋 Historia"
+                background_color: 0.8, 0.6, 0.9, 1
+                font_size: "18sp"
+                on_press: app.root.current = "glucose_history"
+
+        BoxLayout:
+            size_hint_y: None
+            height: "50sp"
+            spacing: 5
+
+            Button:
+                text: "📄 CSV"
+                background_color: 0.9, 0.8, 0.5, 1
+                font_size: "18sp"
+                on_press: root.export_csv()
+
+            Button:
+                text: "📑 PDF"
+                background_color: 0.9, 0.6, 0.5, 1
+                font_size: "18sp"
+                on_press: root.export_pdf()
+
+        RecycleView:
+            size_hint_y: 0.3
+            viewclass: "Label"
+            data: root.glucose_levels[:5]
+
+        Button:
+            text: "🔙 Powrót"
+            background_color: 0.7, 0.7, 0.7, 1
+            font_size: "20sp"
+            size_hint_y: None
+            height: "50sp"
+            on_press: app.root.current = "home"
+
+
+<HeartRateChartScreen>:
+    canvas.before:
+        Color:
+            rgba: 1, 0.95, 0.97, 1  # Jasnoróżowy
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    BoxLayout:
+        orientation: "vertical"
+        padding: 10
+        spacing: 10
+
+        Label:
+            text: "📊 Wykres Tętna"
+            font_size: "28sp"
+            bold: True
+            color: 0.8, 0.3, 0.5, 1
+            size_hint_y: None
+            height: "50sp"
+
+        BoxLayout:
+            id: chart_container
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+        Button:
+            text: "🔙 Powrót"
+            background_color: 0.7, 0.7, 0.7, 1
+            font_size: "20sp"
+            size_hint_y: None
+            height: "60sp"
+            on_press: app.root.current = "heartrate"
+
+
+<GlucoseChartScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.95, 0.97, 1, 1  # Jasnoniebieski
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    BoxLayout:
+        orientation: "vertical"
+        padding: 10
+        spacing: 10
+
+        Label:
+            text: "📊 Wykres Glukozy"
+            font_size: "28sp"
+            bold: True
+            color: 0.3, 0.4, 0.8, 1
+            size_hint_y: None
+            height: "50sp"
+
+        BoxLayout:
+            id: chart_container
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+        Button:
+            text: "🔙 Powrót"
+            background_color: 0.7, 0.7, 0.7, 1
+            font_size: "20sp"
+            size_hint_y: None
+            height: "60sp"
+            on_press: app.root.current = "glucose"
+
+
+<HeartRateHistoryScreen>:
+    canvas.before:
+        Color:
+            rgba: 1, 0.95, 0.97, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    BoxLayout:
+        orientation: "vertical"
+        padding: 10
+        spacing: 10
+
+        Label:
+            text: "📋 Historia Pomiarów Tętna"
+            font_size: "26sp"
+            bold: True
+            color: 0.8, 0.3, 0.5, 1
+            size_hint_y: None
+            height: "50sp"
+
+        Button:
+            text: "🔄 Sortuj: " + ("Od najstarszych ↑" if root.ascending else "Od najnowszych ↓")
+            background_color: 0.6, 0.7, 0.9, 1
+            font_size: "20sp"
+            size_hint_y: None
+            height: "50sp"
+            on_press: root.toggle_sort()
+
+        ScrollView:
+            RecycleView:
+                viewclass: "Label"
+                data: root.history
+                RecycleBoxLayout:
+                    default_size: None, 50
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: "vertical"
+                    spacing: 5
+
+        Button:
+            text: "🔙 Powrót"
+            background_color: 0.7, 0.7, 0.7, 1
+            font_size: "20sp"
+            size_hint_y: None
+            height: "60sp"
+            on_press: app.root.current = "heartrate"
+
+
+<GlucoseHistoryScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.95, 0.97, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    BoxLayout:
+        orientation: "vertical"
+        padding: 10
+        spacing: 10
+
+        Label:
+            text: "📋 Historia Pomiarów Glukozy"
+            font_size: "26sp"
+            bold: True
+            color: 0.3, 0.4, 0.8, 1
+            size_hint_y: None
+            height: "50sp"
+
+        Button:
+            text: "🔄 Sortuj: " + ("Od najstarszych ↑" if root.ascending else "Od najnowszych ↓")
+            background_color: 0.6, 0.7, 0.9, 1
+            font_size: "20sp"
+            size_hint_y: None
+            height: "50sp"
+            on_press: root.toggle_sort()
+
+        ScrollView:
+            RecycleView:
+                viewclass: "Label"
+                data: root.history
+                RecycleBoxLayout:
+                    default_size: None, 50
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: "vertical"
+                    spacing: 5
+
+        Button:
+            text: "🔙 Powrót"
+            background_color: 0.7, 0.7, 0.7, 1
+            font_size: "20sp"
+            size_hint_y: None
+            height: "60sp"
+            on_press: app.root.current = "glucose"

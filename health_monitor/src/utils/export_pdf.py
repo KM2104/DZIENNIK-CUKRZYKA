@@ -65,3 +65,123 @@ def export_pressure_pdf(data, filepath):
             y = height - 50
 
     c.save()
+
+
+def export_heartrate_pdf(data, filepath):
+    if not PDF_AVAILABLE:
+        raise ImportError("Eksport PDF wymaga instalacji pakietu reportlab")
+
+    c = canvas.Canvas(filepath, pagesize=A4)
+    width, height = A4
+
+    y = height - 50
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(50, y, "Raport – Tętno")
+
+    y -= 30
+    c.setFont("Helvetica", 10)
+    c.drawString(
+        50, y, f"Data wygenerowania: {datetime.now().strftime('%Y-%m-%d %H:%M')}"
+    )
+
+    y -= 40
+    for value, date in data:
+        c.drawString(50, y, f"{date[:16]}  –  {value} bpm")
+        y -= 18
+        if y < 50:
+            c.showPage()
+            y = height - 50
+
+    c.save()
+
+
+def export_glucose_pdf(data, filepath):
+    if not PDF_AVAILABLE:
+        raise ImportError("Eksport PDF wymaga instalacji pakietu reportlab")
+
+    c = canvas.Canvas(filepath, pagesize=A4)
+    width, height = A4
+
+    y = height - 50
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(50, y, "Raport – Glukoza")
+
+    y -= 30
+    c.setFont("Helvetica", 10)
+    c.drawString(
+        50, y, f"Data wygenerowania: {datetime.now().strftime('%Y-%m-%d %H:%M')}"
+    )
+
+    y -= 40
+    for row in data:
+        # Obsługa starych (2 kolumny) i nowych (4 kolumny) rekordów
+        if len(row) == 2:
+            value, date = row
+            c.drawString(50, y, f"{date[:16]}  –  {value} mg/dL")
+        else:
+            value, date, measurement_time, meal_timing = row
+            timing_text = f" [{meal_timing}]" if meal_timing else ""
+            c.drawString(50, y, f"{date[:16]}  –  {value} mg/dL{timing_text}")
+
+        y -= 18
+        if y < 50:
+            c.showPage()
+            y = height - 50
+
+    c.save()
+
+
+def export_heartrate_pdf(data, filepath):
+    if not PDF_AVAILABLE:
+        raise ImportError("Eksport PDF wymaga instalacji pakietu reportlab")
+
+    c = canvas.Canvas(filepath, pagesize=A4)
+    width, height = A4
+
+    y = height - 50
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(50, y, "Raport – Tętno")
+
+    y -= 30
+    c.setFont("Helvetica", 10)
+    c.drawString(
+        50, y, f"Data wygenerowania: {datetime.now().strftime('%Y-%m-%d %H:%M')}"
+    )
+
+    y -= 40
+    for value, date in data:
+        c.drawString(50, y, f"{date[:16]}  –  {value} bpm")
+        y -= 18
+        if y < 50:
+            c.showPage()
+            y = height - 50
+
+    c.save()
+
+
+def export_glucose_pdf(data, filepath):
+    if not PDF_AVAILABLE:
+        raise ImportError("Eksport PDF wymaga instalacji pakietu reportlab")
+
+    c = canvas.Canvas(filepath, pagesize=A4)
+    width, height = A4
+
+    y = height - 50
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(50, y, "Raport – Poziom glukozy")
+
+    y -= 30
+    c.setFont("Helvetica", 10)
+    c.drawString(
+        50, y, f"Data wygenerowania: {datetime.now().strftime('%Y-%m-%d %H:%M')}"
+    )
+
+    y -= 40
+    for value, date in data:
+        c.drawString(50, y, f"{date[:16]}  –  {value} mg/dL")
+        y -= 18
+        if y < 50:
+            c.showPage()
+            y = height - 50
+
+    c.save()

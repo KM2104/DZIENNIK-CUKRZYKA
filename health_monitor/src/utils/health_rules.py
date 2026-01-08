@@ -34,3 +34,30 @@ def pressure_alert(sys: int, dia: int) -> AlertLevel:
         return AlertLevel.WARNING
     return AlertLevel.OK
 
+
+def heartrate_alert(heartrate: int) -> AlertLevel:
+    """
+    Ocena tętna:
+    - OK: 60-100 bpm (normalne tętno spoczynkowe)
+    - WARNING: 50-59 lub 101-120 bpm
+    - DANGER: <50 lub >120 bpm
+    """
+    if heartrate < 50 or heartrate > 120:
+        return AlertLevel.DANGER
+    if heartrate < 60 or heartrate > 100:
+        return AlertLevel.WARNING
+    return AlertLevel.OK
+
+
+def glucose_alert(glucose: int) -> AlertLevel:
+    """
+    Ocena poziomu glukozy (mg/dL):
+    - OK: 70-140 mg/dL (poziom normalny/po posiłku)
+    - WARNING: 50-69 lub 141-200 mg/dL
+    - DANGER: <50 lub >200 mg/dL
+    """
+    if glucose < 50 or glucose > 200:
+        return AlertLevel.DANGER
+    if glucose < 70 or glucose > 140:
+        return AlertLevel.WARNING
+    return AlertLevel.OK
