@@ -3,7 +3,6 @@ Health Monitor - Główny plik aplikacji punkt startowy
 """
 
 from kivy.app import App
-from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager
 
 from screens.home import HomeScreen
@@ -26,8 +25,6 @@ from screens.glucose_history import GlucoseHistoryScreen
 class HealthApp(App):
 
     def build(self):
-        Builder.load_file("health.kv")
-
         sm = ScreenManager()
         sm.add_widget(LoginScreen(name="login"))
         sm.current = "login"  # aplikacja startuje od PIN

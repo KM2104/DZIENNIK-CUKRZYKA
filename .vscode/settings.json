@@ -1,4 +1,14 @@
 {
   "workbench.tree.renderIndentGuides": "always",
-  "workbench.tree.indent": 20
+  "workbench.tree.indent": 20,
+  "python.analysis.extraPaths": ["${workspaceFolder}/health_monitor/src"],
+  "python.testing.unittestArgs": [
+    "-v",
+    "-s",
+    "./health_monitor/tests",
+    "-p",
+    "test_*.py"
+  ],
+  "python.testing.pytestEnabled": false,
+  "python.testing.unittestEnabled": true
 }
