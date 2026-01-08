@@ -10,10 +10,6 @@
             pos: self.pos
             size: self.size
     
-    RecycleView:
-        viewclass: "Label"
-        data: root.weights
-
     BoxLayout:
         orientation: "vertical"
         padding: 20
@@ -54,11 +50,7 @@
             background_color: 0.8, 0.7, 0.9, 1  # Lawendowy
             font_size: "22sp"
             on_press: app.root.current = "settings"
-            
 
-        BoxLayout:
-            id: chart_box
-            size_hint_y: 0.6
 
 <LoginScreen>:
     canvas.before:
@@ -693,11 +685,6 @@
                 root.save_glucose(glucose_input.text, measurement_date.text, measurement_time.text, custom_timing.text)
                 glucose_input.text = ""
 
-        Label:
-            text: "Ostatnie 5 pomiarów:"
-            color: 0.3, 0.3, 0.3, 1
-            size_hint_y: None
-            height: "30sp"
 
         BoxLayout:
             size_hint_y: None

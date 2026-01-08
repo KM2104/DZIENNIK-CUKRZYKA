@@ -7,8 +7,6 @@ from kivy.properties import ListProperty
 from db.database import Database
 from utils.validators import validate_weight, ValidationError
 from utils.dialogs import show_error, show_info
-from kivy.uix.boxlayout import BoxLayout
-from utils.charts import weight_chart
 from utils.health_rules import weight_alert, AlertLevel
 from utils.alerts import show_health_alert
 from utils.export_csv import export_weights_csv
@@ -52,21 +50,6 @@ class WeightScreen(Screen):
         from kivy.app import App
 
         App.get_running_app().root.current = "weight_chart"
-
-    def save_weight(self, value):
-        try:
-            weight = validate_weight(value)
-            db = Database()
-            db.add_weight(weight)
-
-            level = weight_alert(weight)
-            show_health_alert(level)
-
-            self.load_weights()
-            show_info("Waga zapisana")
-
-        except ValidationError as e:
-            show_error(str(e))
 
     def export_csv(self):
         db = Database()

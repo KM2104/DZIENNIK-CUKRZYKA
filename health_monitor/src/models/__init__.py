@@ -1,3 +1,0 @@
-"""
-Moduł modeli danych
-"""

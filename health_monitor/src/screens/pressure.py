@@ -7,7 +7,6 @@ from kivy.properties import ListProperty
 from db.database import Database
 from utils.validators import validate_pressure, ValidationError
 from utils.dialogs import show_error, show_info
-from utils.charts import pressure_chart
 from utils.health_rules import pressure_alert
 from utils.alerts import show_health_alert
 from utils.export_csv import export_pressure_csv
@@ -43,21 +42,6 @@ class PressureScreen(Screen):
         from kivy.app import App
 
         App.get_running_app().root.current = "pressure_chart"
-
-    def save_pressure(self, sys, dia):
-        try:
-            systolic, diastolic = validate_pressure(sys, dia)
-            db = Database()
-            db.add_pressure(systolic, diastolic)
-
-            level = pressure_alert(systolic, diastolic)
-            show_health_alert(level)
-
-            self.load_pressures()
-            show_info("Ciśnienie zapisane")
-
-        except ValidationError as e:
-            show_error(str(e))
 
     def export_csv(self):
         db = Database()
