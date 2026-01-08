@@ -1,0 +1,138 @@
+1. WSL – czym jest 
+WSL (Windows Subsystem for Linux) to wbudowany w Windows mechanizm, który pozwala uruchomić pełnoprawny Linux (najczęściej Ubuntu) bez maszyny wirtualnej.
+Oznacza to:
+    brak dual-boot
+    brak VirtualBoxa
+    integrację z Windows
+    dostęp do narzędzi linuksowych (Buildozer!)
+
+WSL jest kluczowy dla Kivy + Android ponieważ:
+    Buildozer (narzędzie do budowy APK) działa tylko na Linuxie
+    Android SDK / NDK jest natywnie wspierany pod Linux
+    WSL jest oficjalnie wspierany przez Microsoft i VS Code
+Bez WSL:
+    na Windowsie nie zbudujesz APK
+Z WSL:
+    piszesz kod na Windowsie
+    budujesz APK w Linuxie
+    testujesz na telefonie
+
+2. Integracja WSL z VS Code 
+  Co dostajesz
+    Edytujesz pliki jak zwykle w VS Code
+    Terminal działa w Ubuntu
+    Python, pip, buildozer → Linux
+    Debugowanie jak lokalnie
+
+  Instalacja WSL (jedna komenda)
+    W PowerShell (jako Administrator):
+wsl --install
+
+  Domyślnie zainstaluje:
+    Ubuntu
+    WSL 2
+
+  Po restarcie:
+    wsl
+
+
+VS Code + WSL
+  Zainstaluj rozszerzenie:
+    Remote – WSL
+  Otwórz projekt:
+    Ctrl + Shift + P
+    Remote-WSL: Open Folder
+
+Od tego momentu:
+    VS Code działa na Windows
+    Kod i Python działają w Linuxie
+
+To jest bardzo ważne – nie mieszaj interpreterów.
+
+3. Visual Studio 2022 – nie używamy
+
+4. Kivy – Framework GUI w Pythonie
+Zalety:
+    Silnik renderujący (OpenGL)
+    UI opisujesz w plikach .kv
+    Logika w .py
+
+
+Struktura projektu (przykład)
+health_app/
+├── main.py
+├── health.kv
+├── database/
+│   └── db.py
+├── models/
+│   └── measurements.py
+└── buildozer.spec
+
+
+Uruchamiasz:
+  python main.py
+
+To działa identycznie na Windows i Androidzie.
+
+5. Buildozer – jak wygląda proces technicznie
+  Co robi Buildozer
+    pobiera Android SDK / NDK
+    pakuje Pythona
+    kompiluje APK
+    instaluje aplikację
+
+  Instalacja (w konsoli WSL)
+    sudo apt update
+    sudo apt install -y python3-pip git zip unzip openjdk-17-jdk
+    pip install buildozer
+
+  W katalogu projektu (w konsoli WSL):
+    buildozer init
+
+  To wygeneruje:
+    buildozer.spec
+
+  Najważniejsze ustawienia (w konsoli WSL):
+    requirements = python3,kivy
+    package.name = HealthMonitor
+    package.domain = org.example
+
+  Budowa APK (w konsoli WSL):
+    buildozer android debug
+
+6. Testowanie na Androidzie
+  Opcje:
+    Fizyczny telefon (najlepsze)
+        USB debugging
+        buildozer android deploy run
+    Emulator
+        działa, ale wolniej
+
+7. Typowy workflow (praca na co dzień)
+    VS Code (Windows)
+    Projekt otwarty przez Remote WSL
+    Piszesz Python + Kivy
+    Testujesz:
+        python main.py
+
+Gdy gotowe (w konsoli WSL):
+    buildozer android debug
+
+Instalujesz APK na telefonie
+Jedno repozytorium, jedna aplikacja
+
+8. Ograniczenia, o których warto wiedzieć
+
+Kivy:
+    UI bardziej „techniczne” niż Material Design
+    ale bardzo stabilne
+
+Buildozer:
+    pierwsza kompilacja trwa długo
+    potem już szybko
+
+Android:
+    brak natywnego wyglądu Android UI
+
+Dla aplikacji zdrowotnej to nie jest problem.
+

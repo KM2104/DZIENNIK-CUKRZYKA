@@ -1,0 +1,3 @@
+"""
+Moduł ekranów aplikacji
+"""

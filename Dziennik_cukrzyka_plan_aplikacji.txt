@@ -1,0 +1,116 @@
+Plan aplikacji dla monitorowania parametrów zdrowotnych człowieka. 
+Do aplkacjii wpisujemy zmiany w wadze, pomiary cukru, pomiar ciśnienia tętniczego i inne. 
+
+Rekomendowana architektura (najważniejsze)
+Jedna baza kodu w Pythonie + GUI wieloplatformowe + lokalna baza danych
+Schemat:
+
+Python
+ ├── Logika aplikacji (pomiary, walidacja, statystyki)
+ ├── GUI (wieloplatformowe)
+ └── Baza danych (SQLite)
+
+Najlepsza opcja: Python + Kivy
+Dlaczego Kivy? działa natywnie na:
+    Windows
+    Android
+    Linux
+    jedna baza kodu
+    dobre wsparcie dla aplikacji mobilnych
+    obsługa dotyku
+    brak zależności od przeglądarki
+
+To jest najłatwiejsza droga:
+    Python
+    GUI
+    Android + Windows
+
+Proponowany stack technologiczny
+1. GUI
+  Kivy
+    język: Python
+    layouty responsywne (telefon / PC)
+    pliki .kv dla UI (czytelne i wygodne)
+
+  Alternatywa:
+    PyQt + Android → bardzo trudne
+    Tkinter → brak sensownego Androida
+
+2. Baza danych
+  SQLite
+    wbudowana w Pythona
+    działa offline
+    idealna do danych zdrowotnych
+
+  Przykładowe tabele:
+    weight_measurements
+    glucose_measurements
+    blood_pressure
+    notes
+
+3. Logika aplikacji
+  Czysty Python:
+    walidacja danych
+    obliczenia (średnie, trendy)
+    alerty (np. zbyt wysokie ciśnienie)
+
+  Jak uruchomić na Windows
+    Instalujesz Python
+    Instalujesz Kivy
+    Uruchamiasz aplikację w terminalu:
+
+  python main.py
+
+  Opcjonalnie:
+    pakowanie do .exe → PyInstaller
+
+Jak uruchomić na Androidzie (najważniejsze)
+Narzędzie: Buildozer
+  Buildozer:
+    bierze Twój kod Python
+    buduje APK
+    instaluje na telefonie
+
+Kroki (w skrócie):
+    Tworzysz aplikację w Kivy
+    Instalujesz Buildozer (Linux / WSL)
+    Generujesz APK w kosoli:
+
+  buildozer android debug
+
+Instalujesz APK na telefonie
+  Uwaga: Buildozer nie działa natywnie na Windows, ale:
+    możesz użyć WSL (Windows Subsystem for Linux)
+    albo maszyny wirtualnej (Ubuntu)
+
+Najprostsza konfiguracja środowiska
+  Windows + WSL (Ubuntu)
+    Windows:
+        kodowanie
+        testowanie GUI
+  WSL:
+    Buildozer
+    generowanie APK
+
+Alternatywa: Backend + aplikacja mobilna
+  Jeśli będzie potrzebne:
+    synchronizację danych
+    konto użytkownika
+    backup w chmurze
+
+Wtedy:
+    Python → backend (FastAPI / Flask)
+    Android → osobna aplikacja
+
+NAJŁATWIEJ:
+    Python
+    Kivy
+    SQLite
+    Buildozer + WSL
+
+Dostajesz:
+    jedną aplikację
+    Windows + Android
+    brak weba
+    brak Java / Kotlin
+

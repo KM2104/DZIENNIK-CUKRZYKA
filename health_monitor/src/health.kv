@@ -1,0 +1,275 @@
+#:kivy 2.0
+    
+
+<HomeScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.95, 0.97, 1, 1  # Jasnoniebieski gradient
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    RecycleView:
+        viewclass: "Label"
+        data: root.weights
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: 20
+        spacing: 15
+
+        Label:
+            text: "🏥 Monitor Zdrowia"
+            font_size: "28sp"
+            bold: True
+            color: 0.2, 0.4, 0.8, 1  # Niebieski tekst
+
+        Button:
+            text: "⚖️ Waga"
+            background_color: 0.4, 0.8, 0.6, 1  # Zielony
+            font_size: "18sp"
+            on_press: app.root.current = "weight"
+
+        Button:
+            text: "💓 Ciśnienie"
+            background_color: 0.9, 0.5, 0.5, 1  # Koralowy
+            font_size: "18sp"
+            on_press: app.root.current = "pressure"
+
+        Button:
+            text: "📊 Pokaż wykres"
+            background_color: 0.6, 0.7, 0.9, 1  # Niebieski
+            font_size: "18sp"
+            on_press: root.show_chart()
+
+        Button:
+            text: "⚙️ Ustawienia"
+            background_color: 0.8, 0.7, 0.9, 1  # Lawendowy
+            font_size: "18sp"
+            on_press: app.root.current = "settings"
+            
+
+        BoxLayout:
+            id: chart_box
+            size_hint_y: 0.6
+
+<LoginScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.9, 0.95, 1, 1  # Jasnoniebieski
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    BoxLayout:
+        orientation: "vertical"
+        padding: 20
+        spacing: 10
+
+        Label:
+            text: "🔐 Wprowadź PIN"
+            font_size: "28sp"
+            bold: True
+            color: 0.2, 0.4, 0.8, 1
+
+        TextInput:
+            id: pin
+            password: True
+            multiline: False
+            input_filter: "int"
+            background_color: 1, 1, 1, 1
+            foreground_color: 0, 0, 0, 1
+            font_size: "20sp"
+
+        Button:
+            text: "Zaloguj"
+            background_color: 0.4, 0.8, 0.6, 1  # Zielony
+            font_size: "18sp"
+            on_press: root.check_pin(pin.text)
+
+    
+
+
+<WeightScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.95, 1, 0.95, 1  # Jasnozielony
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    BoxLayout:
+        orientation: "vertical"
+        padding: 10
+        spacing: 10
+
+        Label:
+            text: "⚖️ Pomiar Wagi"
+            font_size: "24sp"
+            bold: True
+            color: 0.2, 0.6, 0.3, 1
+
+        TextInput:
+            id: weight_input
+            hint_text: "Waga (kg)"
+            input_filter: "float"
+            background_color: 1, 1, 1, 1
+            font_size: "18sp"
+
+        Button:
+            text: "💾 Zapisz"
+            background_color: 0.4, 0.8, 0.6, 1
+            font_size: "16sp"
+            on_press:
+                root.save_weight(weight_input.text)
+                weight_input.text = ""
+
+        Button:
+            text: "📊 Pokaż wykres"
+            background_color: 0.6, 0.7, 0.9, 1
+            on_press: root.show_chart()
+
+        Button:
+            text: "📄 Eksport CSV"
+            background_color: 0.9, 0.8, 0.5, 1
+            on_press: root.export_csv()
+
+        Button:
+            text: "📑 Eksport PDF"
+            background_color: 0.9, 0.6, 0.5, 1
+            on_press: root.export_pdf()            
+
+        BoxLayout:
+            id: chart_box
+            size_hint_y: 0.6
+
+        RecycleView:
+            size_hint_y: 0.4
+            viewclass: "Label"
+            data: root.weights
+
+        Button:
+            text: "🔙 Powrót"
+            background_color: 0.7, 0.7, 0.7, 1
+            on_press: app.root.current = "home"
+
+
+
+
+<PressureScreen>:
+    canvas.before:
+        Color:
+            rgba: 1, 0.95, 0.95, 1  # Jasnoróżowy
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    BoxLayout:
+        orientation: "vertical"
+        padding: 10
+        spacing: 10
+
+        Label:
+            text: "💓 Ciśnienie Tętnicze"
+            font_size: "24sp"
+            bold: True
+            color: 0.8, 0.2, 0.2, 1
+
+        TextInput:
+            id: sys
+            hint_text: "Skurczowe"
+            background_color: 1, 1, 1, 1
+            font_size: "18sp"
+
+        TextInput:
+            id: dia
+            hint_text: "Rozkurczowe"
+            background_color: 1, 1, 1, 1
+            font_size: "18sp"
+
+        Button:
+            text: "💾 Zapisz"
+            background_color: 0.9, 0.5, 0.5, 1
+            font_size: "16sp"
+            on_press:
+                root.save_pressure(sys.text, dia.text)
+                sys.text = ""
+                dia.text = ""
+
+        Button:
+            text: "📄 Eksport CSV"
+            background_color: 0.9, 0.8, 0.5, 1
+            on_press: root.export_csv()
+
+        Button:
+            text: "📑 Eksport PDF"
+            background_color: 0.9, 0.6, 0.5, 1
+            on_press: root.export_pdf()
+                
+
+        Label:
+            text: "📋 Historia pomiarów"
+            color: 0.3, 0.3, 0.3, 1
+
+        RecycleView:
+            viewclass: "Label"
+            data: root.pressures
+
+        Button:
+            text: "🔙 Powrót"
+            background_color: 0.7, 0.7, 0.7, 1
+            on_press: app.root.current = "home"
+
+<SettingsScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.97, 0.95, 1, 1  # Jasnolawendowy
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    BoxLayout:
+        orientation: "vertical"
+        padding: 20
+        spacing: 10
+
+        Label:
+            text: "⚙️ Ustawienia"
+            font_size: "24sp"
+            bold: True
+            color: 0.5, 0.3, 0.7, 1
+
+        TextInput:
+            id: w_min
+            hint_text: "Minimalna waga"
+            background_color: 1, 1, 1, 1
+            font_size: "18sp"
+
+        TextInput:
+            id: w_max
+            hint_text: "Maksymalna waga"
+            background_color: 1, 1, 1, 1
+            font_size: "18sp"
+
+        Button:
+            text: "💾 Zapisz"
+            background_color: 0.4, 0.8, 0.6, 1
+            font_size: "16sp"
+            on_press: root.save()
+
+        Button:
+            text: "🔙 Powrót"
+            background_color: 0.7, 0.7, 0.7, 1
+            on_press: app.root.current = "home"
+
+        Button:
+            text: "💾 Wykonaj backup"
+            background_color: 0.6, 0.7, 0.9, 1
+            on_press: root.backup()
+
+        Button:
+            text: "📥 Przywróć backup"
+            background_color: 0.9, 0.7, 0.5, 1
+            on_press: root.restore()
+    
+           
