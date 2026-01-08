@@ -13,6 +13,8 @@ from screens.settings import SettingsScreen
 from screens.login import LoginScreen
 from screens.weight_chart import WeightChartScreen
 from screens.pressure_chart import PressureChartScreen
+from screens.weight_history import WeightHistoryScreen
+from screens.pressure_history import PressureHistoryScreen
 
 
 class HealthApp(App):
@@ -29,6 +31,8 @@ class HealthApp(App):
         sm.add_widget(SettingsScreen(name="settings"))
         sm.add_widget(WeightChartScreen(name="weight_chart"))
         sm.add_widget(PressureChartScreen(name="pressure_chart"))
+        sm.add_widget(WeightHistoryScreen(name="weight_history"))
+        sm.add_widget(PressureHistoryScreen(name="pressure_history"))
 
         return sm
 

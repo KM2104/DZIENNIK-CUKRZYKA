@@ -1,4 +1,5 @@
 #:kivy 2.0
+#:import RecycleBoxLayout kivy.uix.recycleboxlayout.RecycleBoxLayout
     
 
 <HomeScreen>:
@@ -130,6 +131,12 @@
             on_press: root.show_chart()
 
         Button:
+            text: "� Historia pomiarów"
+            background_color: 0.8, 0.6, 0.9, 1
+            font_size: "16sp"
+            on_press: app.root.current = "weight_history"
+
+        Button:
             text: "📄 Eksport CSV"
             background_color: 0.9, 0.8, 0.5, 1
             on_press: root.export_csv()
@@ -139,10 +146,16 @@
             background_color: 0.9, 0.6, 0.5, 1
             on_press: root.export_pdf()            
 
+        Label:
+            text: "Ostatnie 5 pomiarów:"
+            size_hint_y: None
+            height: "30sp"
+            color: 0.3, 0.3, 0.3, 1
+
         RecycleView:
-            size_hint_y: 1.0
+            size_hint_y: 0.5
             viewclass: "Label"
-            data: root.weights
+            data: root.weights[:5]
 
         Button:
             text: "🔙 Powrót"
@@ -198,6 +211,12 @@
             on_press: root.show_chart()
 
         Button:
+            text: "📋 Historia pomiarów"
+            background_color: 0.8, 0.6, 0.9, 1
+            font_size: "16sp"
+            on_press: app.root.current = "pressure_history"
+
+        Button:
             text: "📄 Eksport CSV"
             background_color: 0.9, 0.8, 0.5, 1
             on_press: root.export_csv()
@@ -208,15 +227,15 @@
             on_press: root.export_pdf()
 
         Label:
-            text: "📋 Historia pomiarów"
+            text: "Ostatnie 5 pomiarów:"
             color: 0.3, 0.3, 0.3, 1
             size_hint_y: None
             height: "30sp"
 
         RecycleView:
-            size_hint_y: 1.0
+            size_hint_y: 0.5
             viewclass: "Label"
-            data: root.pressures
+            data: root.pressures[:5]
 
         Button:
             text: "🔙 Powrót"
@@ -351,6 +370,106 @@
                 Rectangle:
                     pos: self.pos
                     size: self.size
+
+        Button:
+            text: "🔙 Powrót"
+            background_color: 0.7, 0.7, 0.7, 1
+            font_size: "18sp"
+            size_hint_y: None
+            height: "60sp"
+            on_press: app.root.current = "pressure"
+
+
+<WeightHistoryScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.95, 1, 0.95, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    BoxLayout:
+        orientation: "vertical"
+        padding: 10
+        spacing: 10
+
+        Label:
+            text: "📋 Historia Pomiarów Wagi"
+            font_size: "26sp"
+            bold: True
+            color: 0.2, 0.6, 0.3, 1
+            size_hint_y: None
+            height: "50sp"
+
+        Button:
+            text: "🔄 Sortuj: " + ("Od najstarszych ↑" if root.ascending else "Od najnowszych ↓")
+            background_color: 0.6, 0.7, 0.9, 1
+            font_size: "16sp"
+            size_hint_y: None
+            height: "50sp"
+            on_press: root.toggle_sort()
+
+        ScrollView:
+            RecycleView:
+                viewclass: "Label"
+                data: root.history
+                RecycleBoxLayout:
+                    default_size: None, 50
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: "vertical"
+                    spacing: 5
+
+        Button:
+            text: "🔙 Powrót"
+            background_color: 0.7, 0.7, 0.7, 1
+            font_size: "18sp"
+            size_hint_y: None
+            height: "60sp"
+            on_press: app.root.current = "weight"
+
+
+<PressureHistoryScreen>:
+    canvas.before:
+        Color:
+            rgba: 1, 0.95, 0.95, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    BoxLayout:
+        orientation: "vertical"
+        padding: 10
+        spacing: 10
+
+        Label:
+            text: "📋 Historia Pomiarów Ciśnienia"
+            font_size: "26sp"
+            bold: True
+            color: 0.8, 0.2, 0.2, 1
+            size_hint_y: None
+            height: "50sp"
+
+        Button:
+            text: "🔄 Sortuj: " + ("Od najstarszych ↑" if root.ascending else "Od najnowszych ↓")
+            background_color: 0.6, 0.7, 0.9, 1
+            font_size: "16sp"
+            size_hint_y: None
+            height: "50sp"
+            on_press: root.toggle_sort()
+
+        ScrollView:
+            RecycleView:
+                viewclass: "Label"
+                data: root.history
+                RecycleBoxLayout:
+                    default_size: None, 50
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: "vertical"
+                    spacing: 5
 
         Button:
             text: "🔙 Powrót"
