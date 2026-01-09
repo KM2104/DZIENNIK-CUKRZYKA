@@ -1,5 +1,6 @@
 """
 Szybki runner testów - bez importowania Kivy
+Uruchamia wszystkie testy jednostkowe w katalogu tests/
 """
 
 import sys
@@ -18,9 +19,19 @@ if __name__ == "__main__":
     tests = loader.discover(os.path.dirname(__file__), pattern="test_*.py")
     suite.addTests(tests)
 
-    # Uruchom testy
+    # Uruchom testy z szczegółowym outputem
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)
+
+    # Wyświetl podsumowanie
+    print("\n" + "=" * 70)
+    print(f"Wykonano {result.testsRun} testów")
+    print(f"✓ Sukces: {result.testsRun - len(result.failures) - len(result.errors)}")
+    if result.failures:
+        print(f"✗ Niepowodzenia: {len(result.failures)}")
+    if result.errors:
+        print(f"✗ Błędy: {len(result.errors)}")
+    print("=" * 70)
 
     # Zwróć kod wyjścia
     sys.exit(0 if result.wasSuccessful() else 1)
