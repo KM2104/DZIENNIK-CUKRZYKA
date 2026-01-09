@@ -51,6 +51,12 @@
             font_size: "22sp"
             on_press: app.root.current = "settings"
 
+        Button:
+            text: "🔓 Zmień użytkownika"
+            background_color: 0.6, 0.6, 0.6, 1  # Szary
+            font_size: "18sp"
+            on_press: app.root.current = "login"
+
 
 <LoginScreen>:
     canvas.before:
@@ -66,10 +72,26 @@
         spacing: 10
 
         Label:
-            text: "🔐 Wprowadź PIN"
+            text: "🔐 Logowanie"
             font_size: "28sp"
             bold: True
             color: 0.2, 0.4, 0.8, 1
+
+        Button:
+            id: user_selector
+            text: "Wybierz użytkownika"
+            background_color: 0.6, 0.7, 0.9, 1
+            font_size: "18sp"
+            size_hint_y: None
+            height: "50sp"
+            on_press: root.select_user()
+
+        Label:
+            text: "Wprowadź PIN:"
+            font_size: "18sp"
+            color: 0.2, 0.4, 0.8, 1
+            size_hint_y: None
+            height: "30sp"
 
         TextInput:
             id: pin
@@ -81,12 +103,10 @@
             font_size: "20sp"
 
         Button:
-            text: "Zaloguj"
+            text: "✅ Zaloguj"
             background_color: 0.4, 0.8, 0.6, 1  # Zielony
             font_size: "20sp"
             on_press: root.check_pin(pin.text)
-
-    
 
 
 <WeightScreen>:
@@ -261,50 +281,316 @@
     
     BoxLayout:
         orientation: "vertical"
-        padding: 20
-        spacing: 10
+        padding: 10
+        spacing: 5
 
         Label:
             text: "⚙️ Ustawienia"
             font_size: "24sp"
             bold: True
             color: 0.5, 0.3, 0.7, 1
+            size_hint_y: None
+            height: "50sp"
 
-        TextInput:
-            id: w_min
-            hint_text: "Minimalna waga"
-            background_color: 1, 1, 1, 1
-            font_size: "18sp"
+        ScrollView:
+            do_scroll_x: False
+            
+            BoxLayout:
+                orientation: "vertical"
+                spacing: 10
+                size_hint_y: None
+                height: self.minimum_height
+                padding: [10, 0]
 
-        TextInput:
-            id: w_max
-            hint_text: "Maksymalna waga"
-            background_color: 1, 1, 1, 1
-            font_size: "18sp"
+                # === SEKCJA WAGA ===
+                Label:
+                    text: "⚖️ Limity Wagi (kg)"
+                    font_size: "18sp"
+                    bold: True
+                    color: 0.3, 0.5, 0.7, 1
+                    size_hint_y: None
+                    height: "35sp"
 
-        Button:
-            text: "💾 Zapisz"
-            background_color: 0.4, 0.8, 0.6, 1
-            font_size: "20sp"
-            on_press: root.save()
+                GridLayout:
+                    cols: 2
+                    spacing: 5
+                    size_hint_y: None
+                    height: "90sp"
+                    
+                    Label:
+                        text: "Min:"
+                        size_hint_x: 0.3
+                    TextInput:
+                        id: w_min
+                        hint_text: "Minimalna waga (np. 50)"
+                        input_filter: 'float'
+                        size_hint_x: 0.7
+                    
+                    Label:
+                        text: "Max:"
+                        size_hint_x: 0.3
+                    TextInput:
+                        id: w_max
+                        hint_text: "Maksymalna waga (np. 150)"
+                        input_filter: 'float'
+                        size_hint_x: 0.7
 
+                # === SEKCJA CIŚNIENIE ===
+                Label:
+                    text: "💓 Limity Ciśnienia (mmHg)"
+                    font_size: "18sp"
+                    bold: True
+                    color: 0.7, 0.3, 0.3, 1
+                    size_hint_y: None
+                    height: "35sp"
+
+                GridLayout:
+                    cols: 2
+                    spacing: 5
+                    size_hint_y: None
+                    height: "270sp"
+                    
+                    Label:
+                        text: "Skurczowe\nmin:"
+                        size_hint_x: 0.4
+                    TextInput:
+                        id: sys_min
+                        hint_text: "Ciśnienie skurczowe minimalne (np. 90)"
+                        input_filter: 'int'
+                        size_hint_x: 0.6
+                    
+                    Label:
+                        text: "Rozkurczowe\nmin:"
+                        size_hint_x: 0.4
+                    TextInput:
+                        id: dia_min
+                        hint_text: "Ciśnienie rozkurczowe minimalne (np. 60)"
+                        input_filter: 'int'
+                        size_hint_x: 0.6
+                    
+                    Label:
+                        text: "Skurczowe\nostrzeżenie:"
+                        size_hint_x: 0.4
+                    TextInput:
+                        id: sys_warn
+                        hint_text: "Ciśnienie skurczowe zalecane (np. 140)"
+                        input_filter: 'int'
+                        size_hint_x: 0.6
+                    
+                    Label:
+                        text: "Rozkurczowe\nostrzeżenie:"
+                        size_hint_x: 0.4
+                    TextInput:
+                        id: dia_warn
+                        hint_text: "Ciśnienie rozkurczowe zalecane (np. 90)"
+                        input_filter: 'int'
+                        size_hint_x: 0.6
+                    
+                    Label:
+                        text: "Skurczowe\nniebezpiecz.:"
+                        size_hint_x: 0.4
+                    TextInput:
+                        id: sys_danger
+                        hint_text: "Ciśnienie skurczowe max (np. 180)"
+                        input_filter: 'int'
+                        size_hint_x: 0.6
+                    
+                    Label:
+                        text: "Rozkurczowe\nniebezpiecz.:"
+                        size_hint_x: 0.4
+                    TextInput:
+                        id: dia_danger
+                        hint_text: "Ciśnienie rozkurczowe max (np. 120)"
+                        input_filter: 'int'
+                        size_hint_x: 0.6
+
+                # === SEKCJA TĘTNO ===
+                Label:
+                    text: "❤️ Limity Tętna (bpm)"
+                    font_size: "18sp"
+                    bold: True
+                    color: 0.8, 0.2, 0.4, 1
+                    size_hint_y: None
+                    height: "35sp"
+
+                GridLayout:
+                    cols: 2
+                    spacing: 5
+                    size_hint_y: None
+                    height: "180sp"
+                    
+                    Label:
+                        text: "Norma min:"
+                        size_hint_x: 0.4
+                    TextInput:
+                        id: hr_min
+                        hint_text: "Tętno minimalne (np. 60)"
+                        input_filter: 'int'
+                        size_hint_x: 0.6
+                    
+                    Label:
+                        text: "Norma max:"
+                        size_hint_x: 0.4
+                    TextInput:
+                        id: hr_max
+                        hint_text: "Tętno maksymalne (np. 100)"
+                        input_filter: 'int'
+                        size_hint_x: 0.6
+                    
+                    Label:
+                        text: "Niebezpiecz.\nza niskie:"
+                        size_hint_x: 0.4
+                    TextInput:
+                        id: hr_danger_low
+                        hint_text: "Tętno krytycznie niskie (np. 40)"
+                        input_filter: 'int'
+                        size_hint_x: 0.6
+                    
+                    Label:
+                        text: "Niebezpiecz.\nza wysokie:"
+                        size_hint_x: 0.4
+                    TextInput:
+                        id: hr_danger_high
+                        hint_text: "Tętno krytycznie wysokie (np. 150)"
+                        input_filter: 'int'
+                        size_hint_x: 0.6
+
+                # === SEKCJA GLUKOZA ===
+                Label:
+                    text: "🩸 Limity Glukozy (mg/dL)"
+                    font_size: "18sp"
+                    bold: True
+                    color: 0.6, 0.2, 0.6, 1
+                    size_hint_y: None
+                    height: "35sp"
+
+                GridLayout:
+                    cols: 2
+                    spacing: 5
+                    size_hint_y: None
+                    height: "180sp"
+                    
+                    Label:
+                        text: "Norma min:"
+                        size_hint_x: 0.4
+                    TextInput:
+                        id: glucose_min
+                        hint_text: "Glukoza minimalna (np. 70)"
+                        input_filter: 'int'
+                        size_hint_x: 0.6
+                    
+                    Label:
+                        text: "Norma max:"
+                        size_hint_x: 0.4
+                    TextInput:
+                        id: glucose_max
+                        hint_text: "Glukoza maksymalna (np. 140)"
+                        input_filter: 'int'
+                        size_hint_x: 0.6
+                    
+                    Label:
+                        text: "Niebezpiecz.\nhipoglikemia:"
+                        size_hint_x: 0.4
+                    TextInput:
+                        id: glucose_danger_low
+                        hint_text: "Hipoglikemia - próg (np. 50)"
+                        input_filter: 'int'
+                        size_hint_x: 0.6
+                    
+                    Label:
+                        text: "Niebezpiecz.\nhiperglikemia:"
+                        size_hint_x: 0.4
+                    TextInput:
+                        id: glucose_danger_high
+                        hint_text: "Hiperglikemia - próg (np. 250)"
+                        input_filter: 'int'
+                        size_hint_x: 0.6
+
+                # Przycisk zapisu limitów
+                Button:
+                    text: "💾 Zapisz wszystkie limity"
+                    background_color: 0.4, 0.8, 0.6, 1
+                    font_size: "18sp"
+                    size_hint_y: None
+                    height: "50sp"
+                    on_press: root.save_limits()
+
+                # === SEKCJA UŻYTKOWNICY ===
+                Label:
+                    text: "👥 Zarządzanie Użytkownikami"
+                    font_size: "18sp"
+                    bold: True
+                    color: 0.2, 0.4, 0.6, 1
+                    size_hint_y: None
+                    height: "35sp"
+
+                Label:
+                    id: user_list
+                    text: "Ładowanie użytkowników..."
+                    size_hint_y: None
+                    height: "80sp"
+                    text_size: self.width, None
+                    halign: 'left'
+                    valign: 'top'
+
+                GridLayout:
+                    cols: 2
+                    spacing: 5
+                    size_hint_y: None
+                    height: "50sp"
+                    
+                    Button:
+                        text: "🔐 Zmień PIN"
+                        background_color: 0.7, 0.6, 0.9, 1
+                        font_size: "16sp"
+                        on_press: root.change_pin()
+                    
+                    Button:
+                        text: "➕ Dodaj użytkownika"
+                        background_color: 0.5, 0.8, 0.7, 1
+                        font_size: "16sp"
+                        on_press: root.add_new_user()
+
+                # === SEKCJA BACKUP ===
+                Label:
+                    text: "💾 Backup i Przywracanie"
+                    font_size: "18sp"
+                    bold: True
+                    color: 0.3, 0.5, 0.3, 1
+                    size_hint_y: None
+                    height: "35sp"
+
+                GridLayout:
+                    cols: 2
+                    spacing: 5
+                    size_hint_y: None
+                    height: "50sp"
+                    
+                    Button:
+                        text: "💾 Wykonaj backup"
+                        background_color: 0.6, 0.7, 0.9, 1
+                        font_size: "16sp"
+                        on_press: root.backup()
+                    
+                    Button:
+                        text: "📥 Przywróć backup"
+                        background_color: 0.9, 0.7, 0.5, 1
+                        font_size: "16sp"
+                        on_press: root.restore()
+
+                # Odstęp przed przyciskiem powrotu
+                Widget:
+                    size_hint_y: None
+                    height: "10sp"
+
+        # Przycisk powrotu na dole
         Button:
             text: "🔙 Powrót"
             background_color: 0.7, 0.7, 0.7, 1
             font_size: "20sp"
+            size_hint_y: None
+            height: "50sp"
             on_press: app.root.current = "home"
-
-        Button:
-            text: "💾 Wykonaj backup"
-            background_color: 0.6, 0.7, 0.9, 1
-            font_size: "20sp"
-            on_press: root.backup()
-
-        Button:
-            text: "📥 Przywróć backup"
-            background_color: 0.9, 0.7, 0.5, 1
-            font_size: "20sp"
-            on_press: root.restore()
 
 
 <WeightChartScreen>:

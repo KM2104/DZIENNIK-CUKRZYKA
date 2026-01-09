@@ -67,10 +67,22 @@ class Database:
         """
         )
 
+        cur.execute(
+            """
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            pin TEXT NOT NULL,
+            created_date TEXT
+        )
+        """
+        )
+
         self.conn.commit()
 
         # Migracja: Dodaj brakujące kolumny do istniejącej tabeli glucose
         self._migrate_glucose_table()
+        self._migrate_user_columns()
 
     def _migrate_glucose_table(self):
         """Dodaje nowe kolumny do tabeli glucose jeśli ich nie ma"""
@@ -87,6 +99,19 @@ class Database:
         if "meal_timing" not in columns:
             cur.execute("ALTER TABLE glucose ADD COLUMN meal_timing TEXT")
             self.conn.commit()
+
+    def _migrate_user_columns(self):
+        """Dodaje kolumnę user_id do tabel pomiarów jeśli jej nie ma"""
+        cur = self.conn.cursor()
+
+        tables = ["weight", "pressure", "heartrate", "glucose"]
+        for table in tables:
+            cur.execute(f"PRAGMA table_info({table})")
+            columns = [row[1] for row in cur.fetchall()]
+
+            if "user_id" not in columns:
+                cur.execute(f"ALTER TABLE {table} ADD COLUMN user_id INTEGER DEFAULT 1")
+                self.conn.commit()
 
     def add_weight(self, value):
         self.conn.execute(
@@ -181,3 +206,49 @@ class Database:
         cur.execute("SELECT value FROM settings WHERE key = ?", (key,))
         row = cur.fetchone()
         return row[0] if row else default
+
+    # === Zarządzanie użytkownikami ===
+
+    def add_user(self, name: str, pin: str):
+        """Dodaje nowego użytkownika"""
+        self.conn.execute(
+            "INSERT INTO users (name, pin, created_date) VALUES (?, ?, ?)",
+            (name, pin, datetime.now().isoformat()),
+        )
+        self.conn.commit()
+
+    def get_all_users(self):
+        """Pobiera listę wszystkich użytkowników"""
+        cur = self.conn.cursor()
+        cur.execute("SELECT id, name, created_date FROM users ORDER BY name")
+        return cur.fetchall()
+
+    def verify_user_pin(self, user_id: int, pin: str):
+        """Sprawdza czy PIN użytkownika jest poprawny"""
+        cur = self.conn.cursor()
+        cur.execute("SELECT pin FROM users WHERE id = ?", (user_id,))
+        row = cur.fetchone()
+        return row and row[0] == pin
+
+    def update_user_pin(self, user_id: int, new_pin: str):
+        """Aktualizuje PIN użytkownika"""
+        self.conn.execute("UPDATE users SET pin = ? WHERE id = ?", (new_pin, user_id))
+        self.conn.commit()
+
+    def delete_user(self, user_id: int):
+        """Usuwa użytkownika (tylko jeśli nie jest jedynym)"""
+        cur = self.conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM users")
+        count = cur.fetchone()[0]
+
+        if count <= 1:
+            raise ValueError("Nie można usunąć ostatniego użytkownika")
+
+        self.conn.execute("DELETE FROM users WHERE id = ?", (user_id,))
+        self.conn.commit()
+
+    def get_user_by_id(self, user_id: int):
+        """Pobiera dane użytkownika po ID"""
+        cur = self.conn.cursor()
+        cur.execute("SELECT id, name, created_date FROM users WHERE id = ?", (user_id,))
+        return cur.fetchone()
