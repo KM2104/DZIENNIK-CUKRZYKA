@@ -19,6 +19,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
 # Virtual Environment
 .venv/
@@ -32,15 +33,19 @@ env/
 *.swp
 *.swo
 *~
+*.sublime-project
+*.sublime-workspace
 
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # Database
 *.db
 *.sqlite
 *.sqlite3
+health.db
 
 # Buildozer
 .buildozer/
@@ -48,3 +53,36 @@ bin/
 
 # Kivy
 *.pyc
+.kivy/
+
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# Logs
+*.log
+logs/
+
+# Backup files
+*_backup_*.db
+
+# Temporary files
+*.tmp
+*.bak
+~*
+
+# Android build artifacts
+*.apk
+*.aab
+*.ap_
+*.dex
+.gradle/
+local.properties
+
+# Distribution
+*.tar.gz
+*.zip
+

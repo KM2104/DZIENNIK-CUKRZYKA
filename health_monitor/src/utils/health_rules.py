@@ -26,10 +26,12 @@ def weight_alert(weight: float) -> AlertLevel:
 
 def pressure_alert(sys: int, dia: int) -> AlertLevel:
     s = Settings()
-    sys_w, dia_w, sys_d, dia_d = s.get_pressure_limits()
+    sys_min, dia_min, sys_w, dia_w, sys_d, dia_d = s.get_pressure_limits()
 
-    if sys >= sys_d or dia >= dia_d:
+    # Sprawdzenie wartości niebezpiecznych (za wysokich lub za niskich)
+    if sys >= sys_d or dia >= dia_d or sys < sys_min or dia < dia_min:
         return AlertLevel.DANGER
+    # Sprawdzenie ostrzeżenia
     if sys >= sys_w or dia >= dia_w:
         return AlertLevel.WARNING
     return AlertLevel.OK
