@@ -173,8 +173,18 @@ class SettingsScreen(Screen):
             try:
                 s = Settings()
 
-                # Sprawdź limit użytkowników (max 4 + admin = 5)
+                # Sprawdź czy nazwa już istnieje
                 users = s.get_all_users()
+                new_name = name_input.text.strip().lower()
+                for user in users:
+                    existing_name = user[1].lower()  # user[1] to name
+                    if existing_name == new_name:
+                        show_error(
+                            f"Użytkownik o nazwie '{name_input.text.strip()}' już istnieje!"
+                        )
+                        return
+
+                # Sprawdź limit użytkowników (max 4 + admin = 5)
                 non_admin_count = sum(
                     1 for u in users if (len(u) == 4 and not u[3]) or len(u) == 3
                 )
@@ -258,18 +268,28 @@ class SettingsScreen(Screen):
             show_error("Najpierw wybierz użytkownika z listy")
             return
 
-        # Znajdź nazwę użytkownika
+        # Znajdź nazwę użytkownika i sprawdź czy to admin
         s = Settings()
         users = s.get_all_users()
         user_name = None
+        is_admin = False
         for user in users:
             if len(user) == 4:
-                uid, name, created, is_admin = user
+                uid, name, created, admin_flag = user
+                if uid == self.selected_user_id:
+                    user_name = name
+                    is_admin = admin_flag
+                    break
             else:
                 uid, name, created = user
-            if uid == self.selected_user_id:
-                user_name = name
-                break
+                if uid == self.selected_user_id:
+                    user_name = name
+                    break
+
+        # Blokada usuwania admina
+        if is_admin:
+            show_error("Nie można usunąć użytkownika admin!")
+            return
 
         if user_name:
             self.confirm_delete_user(self.selected_user_id, user_name)
