@@ -277,10 +277,10 @@ class SettingsScreen(Screen):
         # Przyciski akcji
         btn_box = BoxLayout(size_hint_y=None, height=50, spacing=10)
 
-        btn_confirm = Button(text="✓ Wybierz", background_color=(0.4, 0.8, 0.6, 1))
+        btn_confirm = Button(text="Wybierz", background_color=(0.4, 0.8, 0.6, 1))
         btn_confirm.bind(on_press=confirm_selection)
 
-        btn_cancel = Button(text="❌ Anuluj", background_color=(0.7, 0.7, 0.7, 1))
+        btn_cancel = Button(text="Anuluj", background_color=(0.7, 0.7, 0.7, 1))
         btn_cancel.bind(on_press=popup.dismiss)
 
         btn_box.add_widget(btn_confirm)
@@ -366,11 +366,11 @@ class SettingsScreen(Screen):
         btn_box = BoxLayout(size_hint_y=None, height=50, spacing=10)
 
         btn_confirm = Button(
-            text="🗑️ Usuń wybranego", background_color=(0.9, 0.5, 0.5, 1)
+            text="Usuń wybranego", background_color=(0.9, 0.5, 0.5, 1)
         )
         btn_confirm.bind(on_press=confirm_deletion)
 
-        btn_cancel = Button(text="❌ Anuluj", background_color=(0.7, 0.7, 0.7, 1))
+        btn_cancel = Button(text="Anuluj", background_color=(0.7, 0.7, 0.7, 1))
         btn_cancel.bind(on_press=popup.dismiss)
 
         btn_box.add_widget(btn_confirm)
@@ -554,7 +554,7 @@ class SettingsScreen(Screen):
             popup.dismiss()
 
         btn_export = Button(
-            text="💾 Zapisz dane i usuń użytkownika",
+            text="Zapisz dane i usuń użytkownika",
             background_color=(0.4, 0.7, 0.9, 1),
             size_hint_y=None,
             height=50,
@@ -562,7 +562,7 @@ class SettingsScreen(Screen):
         )
 
         btn_delete = Button(
-            text="🗑️ Usuń bez zapisu",
+            text="Usuń bez zapisu",
             background_color=(0.9, 0.4, 0.4, 1),
             size_hint_y=None,
             height=50,

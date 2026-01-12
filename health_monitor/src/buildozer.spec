@@ -6,7 +6,9 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,db
 version = 0.1
 requirements = python3,kivy==2.3.0,matplotlib,pillow,numpy,reportlab,kivy_garden.graph
-orientation = portrait
+# orientation: all = automatyczne obracanie (pion/poziom)
+# portrait = tylko pion, landscape = tylko poziom
+orientation = all
 fullscreen = 0
 android.permissions = READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE
 android.api = 33

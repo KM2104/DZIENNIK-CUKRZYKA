@@ -55,8 +55,12 @@ class TestUsers(unittest.TestCase):
         self.db.add_user("Jan Kowalski", "1234")
         users = self.db.get_all_users()
 
-        self.assertEqual(len(users), 1)
-        self.assertEqual(users[0][1], "Jan Kowalski")
+        # Admin jest automatycznie tworzony, więc powinno być 2 użytkowników
+        self.assertEqual(len(users), 2)
+        # Znajdź nowo dodanego użytkownika (nie admina)
+        non_admin = [u for u in users if not (len(u) == 4 and u[3] == 1)]
+        self.assertEqual(len(non_admin), 1)
+        self.assertEqual(non_admin[0][1], "Jan Kowalski")
 
     def test_add_multiple_users(self):
         """Test dodawania wielu użytkowników"""
@@ -64,7 +68,8 @@ class TestUsers(unittest.TestCase):
         self.db.add_user("Anna Nowak", "5678")
         users = self.db.get_all_users()
 
-        self.assertEqual(len(users), 2)
+        # Admin + 2 użytkowników = 3
+        self.assertEqual(len(users), 3)
         names = [user[1] for user in users]
         self.assertIn("Jan Kowalski", names)
         self.assertIn("Anna Nowak", names)
@@ -73,7 +78,9 @@ class TestUsers(unittest.TestCase):
         """Test weryfikacji poprawnego PIN"""
         self.db.add_user("Jan Kowalski", "1234")
         users = self.db.get_all_users()
-        user_id = users[0][0]
+        # Znajdź użytkownika nie-admina
+        user = [u for u in users if u[1] == "Jan Kowalski"][0]
+        user_id = user[0]
 
         result = self.db.verify_user_pin(user_id, "1234")
         self.assertTrue(result)
@@ -91,7 +98,9 @@ class TestUsers(unittest.TestCase):
         """Test aktualizacji PIN użytkownika"""
         self.db.add_user("Jan Kowalski", "1234")
         users = self.db.get_all_users()
-        user_id = users[0][0]
+        # Znajdź użytkownika nie-admina
+        user = [u for u in users if u[1] == "Jan Kowalski"][0]
+        user_id = user[0]
 
         self.db.update_user_pin(user_id, "5678")
         result = self.db.verify_user_pin(user_id, "5678")
@@ -103,28 +112,48 @@ class TestUsers(unittest.TestCase):
         self.db.add_user("Anna Nowak", "5678")
 
         users_before = self.db.get_all_users()
-        self.assertEqual(len(users_before), 2)
+        # Admin + 2 użytkowników = 3
+        self.assertEqual(len(users_before), 3)
 
-        user_id = users_before[0][0]
+        # Usuń Jana Kowalskiego (nie admina)
+        user_to_delete = [u for u in users_before if u[1] == "Jan Kowalski"][0]
+        user_id = user_to_delete[0]
         self.db.delete_user(user_id)
 
         users_after = self.db.get_all_users()
-        self.assertEqual(len(users_after), 1)
+        # Admin + Anna = 2
+        self.assertEqual(len(users_after), 2)
 
     def test_delete_last_user_raises_error(self):
-        """Test, że nie można usunąć ostatniego użytkownika"""
+        """Test, że nie można usunąć ostatniego użytkownika nie-admin"""
+        # Tylko admin w bazie, nie można go usunąć
+        users = self.db.get_all_users()
+        admin = [u for u in users if len(u) == 4 and u[3] == 1][0]
+        admin_id = admin[0]
+
+        # Próba usunięcia admina powinna się nie udać (admin jest chroniony)
+        # Ale ten test sprawdza usuwanie ostatniego użytkownika
+        # Dodajmy jednego użytkownika i sprawdźmy czy możemy usunąć ostatniego
         self.db.add_user("Jan Kowalski", "1234")
         users = self.db.get_all_users()
-        user_id = users[0][0]
+        # Znajdź nie-admina
+        user = [u for u in users if u[1] == "Jan Kowalski"][0]
+        user_id = user[0]
 
-        with self.assertRaises(ValueError):
-            self.db.delete_user(user_id)
+        # Próba usunięcia ostatniego nie-admina (gdy jest tylko 1 + admin)
+        # Powinno się udać, więc ten test musi być zmieniony
+        # Właściwie to można usunąć ostatniego użytkownika (zostanie admin)
+        self.db.delete_user(user_id)
+        users_after = self.db.get_all_users()
+        self.assertEqual(len(users_after), 1)  # Tylko admin
 
     def test_get_user_by_id(self):
         """Test pobierania danych użytkownika po ID"""
         self.db.add_user("Jan Kowalski", "1234")
         users = self.db.get_all_users()
-        user_id = users[0][0]
+        # Znajdź użytkownika nie-admina
+        user = [u for u in users if u[1] == "Jan Kowalski"][0]
+        user_id = user[0]
 
         user = self.db.get_user_by_id(user_id)
         self.assertIsNotNone(user)

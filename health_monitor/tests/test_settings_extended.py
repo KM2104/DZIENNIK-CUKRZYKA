@@ -135,14 +135,20 @@ class TestExtendedSettings(unittest.TestCase):
         self.settings.add_user("Test User", "1234")
         users = self.settings.get_all_users()
 
-        self.assertEqual(len(users), 1)
-        self.assertEqual(users[0][1], "Test User")
+        # Admin jest automatycznie tworzony, więc powinno być 2 użytkowników
+        self.assertEqual(len(users), 2)
+        # Znajdź nowo dodanego użytkownika
+        test_user = [u for u in users if u[1] == "Test User"]
+        self.assertEqual(len(test_user), 1)
+        self.assertEqual(test_user[0][1], "Test User")
 
     def test_change_user_pin_success(self):
         """Test zmiany PIN użytkownika - sukces"""
         self.settings.add_user("Test User", "1234")
         users = self.settings.get_all_users()
-        user_id = users[0][0]
+        # Znajdź użytkownika Test User
+        user = [u for u in users if u[1] == "Test User"][0]
+        user_id = user[0]
 
         result = self.settings.change_user_pin(user_id, "1234", "5678")
         self.assertTrue(result)

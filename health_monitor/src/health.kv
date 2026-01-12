@@ -17,43 +17,43 @@
         spacing: 15
 
         Label:
-            text: "🏥 Monitor Zdrowia"
+            text: "Monitor Zdrowia"
             font_size: "28sp"
             bold: True
             color: 0.2, 0.4, 0.8, 1  # Niebieski tekst
 
         Button:
-            text: "⚖️ Waga"
+            text: "Waga"
             background_color: 0.4, 0.8, 0.6, 1  # Zielony
             font_size: "22sp"
             on_press: app.root.current = "weight"
 
         Button:
-            text: "💓 Ciśnienie"
+            text: "Ciśnienie"
             background_color: 0.9, 0.5, 0.5, 1  # Koralowy
             font_size: "22sp"
             on_press: app.root.current = "pressure"
 
         Button:
-            text: "� Tętno"
+            text: "Tętno"
             background_color: 0.9, 0.7, 0.8, 1  # Różowy
             font_size: "22sp"
             on_press: app.root.current = "heartrate"
 
         Button:
-            text: "🩸 Glukoza"
+            text: "Glukoza"
             background_color: 0.7, 0.8, 0.9, 1  # Jasnoniebieski
             font_size: "22sp"
             on_press: app.root.current = "glucose"
 
         Button:
-            text: "⚙️ Ustawienia Użytkownika"
+            text: "Ustawienia Użytkownika"
             background_color: 0.8, 0.7, 0.9, 1  # Lawendowy
             font_size: "22sp"
             on_press: root.go_to_settings()
 
         Button:
-            text: "🔓 Zmień użytkownika"
+            text: "Zmień użytkownika"
             background_color: 0.6, 0.6, 0.6, 1  # Szary
             font_size: "18sp"
             on_press: app.root.current = "login"
@@ -73,7 +73,7 @@
         spacing: 10
 
         Label:
-            text: "🔐 Logowanie"
+            text: "Logowanie"
             font_size: "28sp"
             bold: True
             color: 0.2, 0.4, 0.8, 1
@@ -104,7 +104,7 @@
             font_size: "20sp"
 
         Button:
-            text: "✅ Zaloguj"
+            text: "Zaloguj"
             background_color: 0.4, 0.8, 0.6, 1  # Zielony
             font_size: "20sp"
             on_press: root.check_pin(pin.text)
@@ -124,7 +124,7 @@
         spacing: 10
 
         Label:
-            text: "⚖️ Pomiar Wagi"
+            text: "Pomiar Wagi"
             font_size: "24sp"
             bold: True
             color: 0.2, 0.6, 0.3, 1
@@ -137,7 +137,7 @@
             font_size: "18sp"
 
         Button:
-            text: "💾 Zapisz"
+            text: "Zapisz"
             background_color: 0.4, 0.8, 0.6, 1
             font_size: "20sp"
             on_press:
@@ -151,25 +151,25 @@
             color: 0.3, 0.3, 0.3, 1        
 
         Button:
-            text: "📊 Pokaż wykres"
+            text: "Pokaż wykres"
             background_color: 0.6, 0.7, 0.9, 1
             font_size: "20sp"
             on_press: root.show_chart()
 
         Button:
-            text: "📋 Historia pomiarów"
+            text: "Historia pomiarów"
             background_color: 0.8, 0.6, 0.9, 1
             font_size: "20sp"
             on_press: app.root.current = "weight_history"
 
         Button:
-            text: "📄 Eksport CSV"
+            text: "Eksport CSV"
             background_color: 0.9, 0.8, 0.5, 1
             font_size: "20sp"
             on_press: root.export_csv()
 
         Button:
-            text: "📑 Eksport PDF"
+            text: "Eksport PDF"
             background_color: 0.9, 0.6, 0.5, 1
             font_size: "20sp"
             on_press: root.export_pdf()            
@@ -182,7 +182,7 @@
             data: root.weights[:5]
 
         Button:
-            text: "🔙 Powrót"
+            text: "Powrót"
             background_color: 0.7, 0.7, 0.7, 1
             on_press: app.root.current = "home"
 
@@ -203,7 +203,7 @@
         spacing: 10
 
         Label:
-            text: "💓 Ciśnienie Tętnicze"
+            text: "Ciśnienie Tętnicze"
             font_size: "24sp"
             bold: True
             color: 0.8, 0.2, 0.2, 1
@@ -221,7 +221,7 @@
             font_size: "18sp"
 
         Button:
-            text: "💾 Zapisz"
+            text: "Zapisz"
             background_color: 0.9, 0.5, 0.5, 1
             font_size: "20sp"
             on_press:
@@ -236,25 +236,25 @@
             height: "30sp"
 
         Button:
-            text: "� Pokaż wykres"
+            text: "Pokaż wykres"
             background_color: 0.6, 0.7, 0.9, 1
             font_size: "20sp"
             on_press: root.show_chart()
 
         Button:
-            text: "📋 Historia pomiarów"
+            text: "Historia pomiarów"
             background_color: 0.8, 0.6, 0.9, 1
             font_size: "20sp"
             on_press: app.root.current = "pressure_history"
 
         Button:
-            text: "📄 Eksport CSV"
+            text: "Eksport CSV"
             background_color: 0.9, 0.8, 0.5, 1
             font_size: "20sp"
             on_press: root.export_csv()
 
         Button:
-            text: "📑 Eksport PDF"
+            text: "Eksport PDF"
             background_color: 0.9, 0.6, 0.5, 1
             font_size: "20sp"
             on_press: root.export_pdf()
@@ -267,7 +267,7 @@
             data: root.pressures[:5]
 
         Button:
-            text: "🔙 Powrót"
+            text: "Powrót"
             background_color: 0.7, 0.7, 0.7, 1
             font_size: "20sp"
             on_press: app.root.current = "home"
@@ -286,7 +286,7 @@
         spacing: 5
 
         Label:
-            text: "⚙️ Ustawienia"
+            text: "Ustawienia"
             font_size: "24sp"
             bold: True
             color: 0.5, 0.3, 0.7, 1
@@ -311,7 +311,7 @@
                     
                     # === SEKCJA WAGA ===
                     AccordionItem:
-                        title: "⚖️ Limity Wagi (kg)"
+                        title: "Limity Wagi (kg)"
                         
                         GridLayout:
                             cols: 2
@@ -340,7 +340,7 @@
 
                     # === SEKCJA CIŚNIENIE ===
                     AccordionItem:
-                        title: "💓 Limity Ciśnienia (mmHg)"
+                        title: "Limity Ciśnienia (mmHg)"
                         
                         GridLayout:
                             cols: 2
@@ -409,7 +409,7 @@
 
                     # === SEKCJA TĘTNO ===
                     AccordionItem:
-                        title: "❤️ Limity Tętna (bpm)"
+                        title: "Limity Tętna (bpm)"
                         
                         GridLayout:
                             cols: 2
@@ -458,7 +458,7 @@
 
                     # === SEKCJA GLUKOZA ===
                     AccordionItem:
-                        title: "🩸 Limity Glukozy (mg/dL)"
+                        title: "Limity Glukozy (mg/dL)"
                         
                         GridLayout:
                             cols: 2
@@ -507,7 +507,7 @@
 
                 # Przycisk zapisu limitów
                 Button:
-                    text: "💾 Zapisz wszystkie limity"
+                    text: "Zapisz wszystkie limity"
                     background_color: 0.4, 0.8, 0.6, 1
                     font_size: "18sp"
                     size_hint_y: None
@@ -516,7 +516,7 @@
 
                 # === SEKCJA UŻYTKOWNICY ===
                 Label:
-                    text: "👥 Zarządzanie Użytkownikami"
+                    text: "Zarządzanie Użytkownikami"
                     font_size: "18sp"
                     bold: True
                     color: 0.2, 0.4, 0.6, 1
@@ -530,32 +530,32 @@
                     height: "100sp"
                     
                     Button:
-                        text: "🔐 Zmień PIN"
+                        text: "Zmień PIN"
                         background_color: 0.7, 0.6, 0.9, 1
                         font_size: "16sp"
                         on_press: root.change_pin_selected()
                     
                     Button:
-                        text: "✏️ Zmień nazwę"
+                        text: "Zmień nazwę"
                         background_color: 0.6, 0.7, 0.9, 1
                         font_size: "16sp"
                         on_press: root.change_username_selected()
                     
                     Button:
-                        text: "➕ Dodaj użytkownika"
+                        text: "Dodaj użytkownika"
                         background_color: 0.5, 0.8, 0.7, 1
                         font_size: "16sp"
                         on_press: root.add_new_user()
                     
                     Button:
-                        text: "🗑️ Usuń użytkownika"
+                        text: "Usuń użytkownika"
                         background_color: 0.9, 0.5, 0.5, 1
                         font_size: "16sp"
                         on_press: root.delete_selected_user()
 
                 # === SEKCJA BACKUP ===
                 Label:
-                    text: "💾 Backup i Przywracanie"
+                    text: "Backup i Przywracanie"
                     font_size: "18sp"
                     bold: True
                     color: 0.3, 0.5, 0.3, 1
@@ -569,13 +569,13 @@
                     height: "50sp"
                     
                     Button:
-                        text: "💾 Wykonaj backup"
+                        text: "Wykonaj backup"
                         background_color: 0.6, 0.7, 0.9, 1
                         font_size: "16sp"
                         on_press: root.backup()
                     
                     Button:
-                        text: "📥 Przywróć backup"
+                        text: "Przywróć backup"
                         background_color: 0.9, 0.7, 0.5, 1
                         font_size: "16sp"
                         on_press: root.restore()
@@ -587,7 +587,7 @@
 
         # Przycisk powrotu na dole
         Button:
-            text: "🔙 Powrót"
+            text: "Powrót"
             background_color: 0.7, 0.7, 0.7, 1
             font_size: "20sp"
             size_hint_y: None
@@ -609,7 +609,7 @@
         spacing: 10
 
         Label:
-            text: "📊 Wykres Wagi"
+            text: "Wykres Wagi"
             font_size: "28sp"
             bold: True
             color: 0.2, 0.6, 0.3, 1
@@ -626,7 +626,7 @@
                     size: self.size
 
         Button:
-            text: "🔙 Powrót"
+            text: "Powrót"
             background_color: 0.7, 0.7, 0.7, 1
             font_size: "20sp"
             size_hint_y: None
@@ -648,7 +648,7 @@
         spacing: 10
 
         Label:
-            text: "📊 Wykres Ciśnienia"
+            text: "Wykres Ciśnienia"
             font_size: "28sp"
             bold: True
             color: 0.8, 0.2, 0.2, 1
@@ -672,7 +672,7 @@
                     size: self.size
 
         Button:
-            text: "🔙 Powrót"
+            text: "Powrót"
             background_color: 0.7, 0.7, 0.7, 1
             font_size: "20sp"
             size_hint_y: None
@@ -694,7 +694,7 @@
         spacing: 10
 
         Label:
-            text: "📋 Historia Pomiarów Wagi"
+            text: "Historia Pomiarów Wagi"
             font_size: "26sp"
             bold: True
             color: 0.2, 0.6, 0.3, 1
@@ -722,7 +722,7 @@
                     spacing: 5
 
         Button:
-            text: "🔙 Powrót"
+            text: "Powrót"
             background_color: 0.7, 0.7, 0.7, 1
             font_size: "20sp"
             size_hint_y: None
@@ -744,7 +744,7 @@
         spacing: 10
 
         Label:
-            text: "📋 Historia Pomiarów Ciśnienia"
+            text: "Historia Pomiarów Ciśnienia"
             font_size: "26sp"
             bold: True
             color: 0.8, 0.2, 0.2, 1
@@ -772,7 +772,7 @@
                     spacing: 5
 
         Button:
-            text: "🔙 Powrót"
+            text: "Powrót"
             background_color: 0.7, 0.7, 0.7, 1
             font_size: "20sp"
             size_hint_y: None
@@ -794,7 +794,7 @@
         spacing: 10
 
         Label:
-            text: "💗 Tętno"
+            text: "Tętno"
             font_size: "24sp"
             bold: True
             color: 0.8, 0.3, 0.5, 1
@@ -809,7 +809,7 @@
             font_size: "18sp"
 
         Button:
-            text: "💾 Zapisz"
+            text: "Zapisz"
             background_color: 0.9, 0.7, 0.8, 1
             font_size: "20sp"
             on_press:
@@ -823,25 +823,25 @@
             height: "30sp"
 
         Button:
-            text: "📊 Pokaż wykres"
+            text: "Pokaż wykres"
             background_color: 0.6, 0.7, 0.9, 1
             font_size: "20sp"
             on_press: root.show_chart()
 
         Button:
-            text: "📋 Historia pomiarów"
+            text: "Historia pomiarów"
             background_color: 0.8, 0.6, 0.9, 1
             font_size: "20sp"
             on_press: app.root.current = "heartrate_history"
 
         Button:
-            text: "📄 Eksport CSV"
+            text: "Eksport CSV"
             background_color: 0.9, 0.8, 0.5, 1
             font_size: "20sp"
             on_press: root.export_csv()
 
         Button:
-            text: "📑 Eksport PDF"
+            text: "Eksport PDF"
             background_color: 0.9, 0.6, 0.5, 1
             font_size: "20sp"
             on_press: root.export_pdf()
@@ -852,7 +852,7 @@
             data: root.heartrates[:5]
 
         Button:
-            text: "🔙 Powrót"
+            text: "Powrót"
             background_color: 0.7, 0.7, 0.7, 1
             font_size: "20sp"
             on_press: app.root.current = "home"
@@ -872,7 +872,7 @@
         spacing: 10
 
         Label:
-            text: "🩸 Glukoza"
+            text: "Glukoza"
             font_size: "24sp"
             bold: True
             color: 0.3, 0.4, 0.8, 1
@@ -964,7 +964,7 @@
             disabled: root.meal_timing != "własny"
 
         Button:
-            text: "💾 Zapisz"
+            text: "Zapisz"
             background_color: 0.7, 0.8, 0.9, 1
             font_size: "20sp"
             size_hint_y: None
@@ -980,13 +980,13 @@
             spacing: 5
 
             Button:
-                text: "📊 Wykres"
+                text: "Wykres"
                 background_color: 0.6, 0.7, 0.9, 1
                 font_size: "18sp"
                 on_press: root.show_chart()
 
             Button:
-                text: "📋 Historia"
+                text: "Historia"
                 background_color: 0.8, 0.6, 0.9, 1
                 font_size: "18sp"
                 on_press: app.root.current = "glucose_history"
@@ -997,13 +997,13 @@
             spacing: 5
 
             Button:
-                text: "📄 CSV"
+                text: "CSV"
                 background_color: 0.9, 0.8, 0.5, 1
                 font_size: "18sp"
                 on_press: root.export_csv()
 
             Button:
-                text: "📑 PDF"
+                text: "PDF"
                 background_color: 0.9, 0.6, 0.5, 1
                 font_size: "18sp"
                 on_press: root.export_pdf()
@@ -1014,7 +1014,7 @@
             data: root.glucose_levels[:5]
 
         Button:
-            text: "🔙 Powrót"
+            text: "Powrót"
             background_color: 0.7, 0.7, 0.7, 1
             font_size: "20sp"
             size_hint_y: None
@@ -1036,7 +1036,7 @@
         spacing: 10
 
         Label:
-            text: "📊 Wykres Tętna"
+            text: "Wykres Tętna"
             font_size: "28sp"
             bold: True
             color: 0.8, 0.3, 0.5, 1
@@ -1053,7 +1053,7 @@
                     size: self.size
 
         Button:
-            text: "🔙 Powrót"
+            text: "Powrót"
             background_color: 0.7, 0.7, 0.7, 1
             font_size: "20sp"
             size_hint_y: None
@@ -1075,7 +1075,7 @@
         spacing: 10
 
         Label:
-            text: "📊 Wykres Glukozy"
+            text: "Wykres Glukozy"
             font_size: "28sp"
             bold: True
             color: 0.3, 0.4, 0.8, 1
@@ -1092,7 +1092,7 @@
                     size: self.size
 
         Button:
-            text: "🔙 Powrót"
+            text: "Powrót"
             background_color: 0.7, 0.7, 0.7, 1
             font_size: "20sp"
             size_hint_y: None
@@ -1114,7 +1114,7 @@
         spacing: 10
 
         Label:
-            text: "📋 Historia Pomiarów Tętna"
+            text: "Historia Pomiarów Tętna"
             font_size: "26sp"
             bold: True
             color: 0.8, 0.3, 0.5, 1
@@ -1142,7 +1142,7 @@
                     spacing: 5
 
         Button:
-            text: "🔙 Powrót"
+            text: "Powrót"
             background_color: 0.7, 0.7, 0.7, 1
             font_size: "20sp"
             size_hint_y: None
@@ -1164,7 +1164,7 @@
         spacing: 10
 
         Label:
-            text: "📋 Historia Pomiarów Glukozy"
+            text: "Historia Pomiarów Glukozy"
             font_size: "26sp"
             bold: True
             color: 0.3, 0.4, 0.8, 1
@@ -1192,7 +1192,7 @@
                     spacing: 5
 
         Button:
-            text: "🔙 Powrót"
+            text: "Powrót"
             background_color: 0.7, 0.7, 0.7, 1
             font_size: "20sp"
             size_hint_y: None
