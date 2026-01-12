@@ -1,5 +1,18 @@
 #:kivy 2.0
 #:import RecycleBoxLayout kivy.uix.recycleboxlayout.RecycleBoxLayout
+#:import SelectableUserButton screens.settings.SelectableUserButton
+
+<SelectableUserButton>:
+    size_hint_y: None
+    height: dp(45)
+    group: 'users'
+    background_color: (0.3, 0.5, 0.8, 1) if self.state == 'down' else (0.6, 0.7, 0.9, 1)
+    color: 0.2, 0.4, 0.8, 1
+    font_size: '14sp'
+    text_size: self.width - dp(20), None
+    halign: 'left'
+    valign: 'middle'
+    padding: [10, 0]
     
 
 <HomeScreen>:
@@ -524,14 +537,34 @@
                     size_hint_y: None
                     height: "35sp"
 
-                Label:
-                    id: user_list
-                    text: "Ładowanie użytkowników..."
+                BoxLayout:
+                    orientation: 'vertical'
                     size_hint_y: None
-                    height: "80sp"
-                    text_size: self.width, None
-                    halign: 'left'
-                    valign: 'top'
+                    height: "200sp"
+                    spacing: 5
+                    
+                    Label:
+                        text: "Wybierz użytkownika:"
+                        size_hint_y: None
+                        height: "25sp"
+                        color: 0.2, 0.4, 0.8, 1
+                        font_size: "14sp"
+                    
+                    ScrollView:
+                        size_hint_y: 1
+                        do_scroll_x: False
+                        
+                        RecycleView:
+                            id: user_recycler
+                            viewclass: 'SelectableUserButton'
+                            
+                            RecycleBoxLayout:
+                                default_size: None, dp(45)
+                                default_size_hint: 1, None
+                                size_hint_y: None
+                                height: self.minimum_height
+                                orientation: 'vertical'
+                                spacing: 3
 
                 GridLayout:
                     cols: 2
@@ -543,13 +576,13 @@
                         text: "🔐 Zmień PIN"
                         background_color: 0.7, 0.6, 0.9, 1
                         font_size: "16sp"
-                        on_press: root.change_pin()
+                        on_press: root.change_pin_selected()
                     
                     Button:
                         text: "✏️ Zmień nazwę"
                         background_color: 0.6, 0.7, 0.9, 1
                         font_size: "16sp"
-                        on_press: root.change_username()
+                        on_press: root.change_username_selected()
                     
                     Button:
                         text: "➕ Dodaj użytkownika"
@@ -561,7 +594,7 @@
                         text: "🗑️ Usuń użytkownika"
                         background_color: 0.9, 0.5, 0.5, 1
                         font_size: "16sp"
-                        on_press: root.delete_user_dialog()
+                        on_press: root.delete_selected_user()
 
                 # === SEKCJA BACKUP ===
                 Label:

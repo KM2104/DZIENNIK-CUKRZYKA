@@ -2,6 +2,11 @@
 Health Monitor - Główny plik aplikacji punkt startowy
 """
 
+# Wyłącz multitouch emulation (czerwone kółka przy Ctrl+klik)
+from kivy.config import Config
+
+Config.set("input", "mouse", "mouse,multitouch_on_demand")
+
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager
 
