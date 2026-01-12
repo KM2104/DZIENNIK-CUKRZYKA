@@ -1,21 +1,7 @@
 #:kivy 2.0
 #:import RecycleBoxLayout kivy.uix.recycleboxlayout.RecycleBoxLayout
-#:import SelectableUserButton screens.settings.SelectableUserButton
 #:import Accordion kivy.uix.accordion.Accordion
 #:import AccordionItem kivy.uix.accordion.AccordionItem
-
-<SelectableUserButton>:
-    size_hint_y: None
-    height: dp(45)
-    group: 'users'
-    background_color: (0.3, 0.5, 0.8, 1) if self.state == 'down' else (0.6, 0.7, 0.9, 1)
-    color: 0.2, 0.4, 0.8, 1
-    font_size: '14sp'
-    text_size: self.width - dp(20), None
-    halign: 'left'
-    valign: 'middle'
-    padding: [10, 0]
-    
 
 <HomeScreen>:
     canvas.before:
@@ -362,7 +348,7 @@
                             padding: 10
                             
                             Label:
-                                text: "Skurczowe\\nmin:"
+                                text: "Skurczowe\nmin:"
                                 size_hint_x: 0.4
                                 color: 0.2, 0.2, 0.2, 1
                             TextInput:
@@ -372,7 +358,7 @@
                                 size_hint_x: 0.6
                             
                             Label:
-                                text: "Rozkurczowe\\nmin:"
+                                text: "Rozkurczowe\nmin:"
                                 size_hint_x: 0.4
                                 color: 0.2, 0.2, 0.2, 1
                             TextInput:
@@ -382,7 +368,7 @@
                                 size_hint_x: 0.6
                             
                             Label:
-                                text: "Skurczowe\\nostrzeżenie:"
+                                text: "Skurczowe\nostrzeżenie:"
                                 size_hint_x: 0.4
                                 color: 0.2, 0.2, 0.2, 1
                             TextInput:
@@ -392,7 +378,7 @@
                                 size_hint_x: 0.6
                             
                             Label:
-                                text: "Rozkurczowe\\nostrzeżenie:"
+                                text: "Rozkurczowe\nostrzeżenie:"
                                 size_hint_x: 0.4
                                 color: 0.2, 0.2, 0.2, 1
                             TextInput:
@@ -402,7 +388,7 @@
                                 size_hint_x: 0.6
                             
                             Label:
-                                text: "Skurczowe\\nniebezpiecz.:"
+                                text: "Skurczowe\nniebezpiecz.:"
                                 size_hint_x: 0.4
                                 color: 0.2, 0.2, 0.2, 1
                             TextInput:
@@ -412,7 +398,7 @@
                                 size_hint_x: 0.6
                             
                             Label:
-                                text: "Rozkurczowe\\nniebezpiecz.:"
+                                text: "Rozkurczowe\nniebezpiecz.:"
                                 size_hint_x: 0.4
                                 color: 0.2, 0.2, 0.2, 1
                             TextInput:
@@ -451,7 +437,7 @@
                                 size_hint_x: 0.6
                             
                             Label:
-                                text: "Niebezpiecz.\\nza niskie:"
+                                text: "Niebezpiecz.\nza niskie:"
                                 size_hint_x: 0.4
                                 color: 0.2, 0.2, 0.2, 1
                             TextInput:
@@ -461,7 +447,7 @@
                                 size_hint_x: 0.6
                             
                             Label:
-                                text: "Niebezpiecz.\\nza wysokie:"
+                                text: "Niebezpiecz.\nza wysokie:"
                                 size_hint_x: 0.4
                                 color: 0.2, 0.2, 0.2, 1
                             TextInput:
@@ -500,7 +486,7 @@
                                 size_hint_x: 0.6
                             
                             Label:
-                                text: "Niebezpiecz.\\nhipoglikemia:"
+                                text: "Niebezpiecz.\nhipoglikemia:"
                                 size_hint_x: 0.4
                                 color: 0.2, 0.2, 0.2, 1
                             TextInput:
@@ -510,7 +496,7 @@
                                 size_hint_x: 0.6
                             
                             Label:
-                                text: "Niebezpiecz.\\nhiperglikemia:"
+                                text: "Niebezpiecz.\nhiperglikemia:"
                                 size_hint_x: 0.4
                                 color: 0.2, 0.2, 0.2, 1
                             TextInput:
@@ -536,35 +522,6 @@
                     color: 0.2, 0.4, 0.6, 1
                     size_hint_y: None
                     height: "35sp"
-
-                BoxLayout:
-                    orientation: 'vertical'
-                    size_hint_y: None
-                    height: "200sp"
-                    spacing: 5
-                    
-                    Label:
-                        text: "Wybierz użytkownika:"
-                        size_hint_y: None
-                        height: "25sp"
-                        color: 0.2, 0.4, 0.8, 1
-                        font_size: "14sp"
-                    
-                    ScrollView:
-                        size_hint_y: 1
-                        do_scroll_x: False
-                        
-                        RecycleView:
-                            id: user_recycler
-                            viewclass: 'SelectableUserButton'
-                            
-                            RecycleBoxLayout:
-                                default_size: None, dp(45)
-                                default_size_hint: 1, None
-                                size_hint_y: None
-                                height: self.minimum_height
-                                orientation: 'vertical'
-                                spacing: 3
 
                 GridLayout:
                     cols: 2

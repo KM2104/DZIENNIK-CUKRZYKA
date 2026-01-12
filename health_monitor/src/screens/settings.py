@@ -6,9 +6,7 @@ Warstwa ekranu ustawień aplikacji - zarządzanie preferencjami użytkownika
 from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.scrollview import ScrollView
-from kivy.uix.behaviors import ToggleButtonBehavior
-from kivy.uix.button import Button as KivyButton
-from kivy.properties import NumericProperty
+from kivy.uix.togglebutton import ToggleButton
 from utils.settings import Settings
 from utils.dialogs import show_info, show_error
 from utils.backup import backup_database, restore_database
@@ -28,25 +26,7 @@ from datetime import datetime
 import os
 
 
-class SelectableUserButton(ToggleButtonBehavior, KivyButton):
-    """Przycisk wyboru użytkownika z obsługą zaznaczenia"""
-
-    user_id = NumericProperty(0)
-
-    def on_press(self):
-        """Obsługuje kliknięcie przycisku - ustawia wybranego użytkownika"""
-        # Znajdź ekran settings i ustaw selected_user_id
-        from kivy.app import App
-
-        app = App.get_running_app()
-        settings_screen = app.root.get_screen("settings")
-        settings_screen.selected_user_id = self.user_id
-        super().on_press()
-
-
 class SettingsScreen(Screen):
-    selected_user_id = None  # Przechowuje ID wybranego użytkownika
-
     def on_pre_enter(self):
         """Ładuje wszystkie ustawienia przy wejściu na ekran"""
         s = Settings()
@@ -78,9 +58,6 @@ class SettingsScreen(Screen):
         self.ids.glucose_max.text = str(gl_max)
         self.ids.glucose_danger_low.text = str(gl_d_low)
         self.ids.glucose_danger_high.text = str(gl_d_high)
-
-        # Załaduj listę użytkowników
-        self.refresh_user_list()
 
     def save_limits(self):
         """Zapisuje wszystkie limity parametrów zdrowotnych"""
@@ -197,7 +174,6 @@ class SettingsScreen(Screen):
 
                 s.add_user(name_input.text.strip(), pin_input.text)
                 show_info(f"Użytkownik {name_input.text} dodany")
-                self.refresh_user_list()
                 popup.dismiss()
             except Exception as e:
                 show_error(f"Błąd: {str(e)}")
@@ -215,84 +191,193 @@ class SettingsScreen(Screen):
 
         popup.open()
 
-    def refresh_user_list(self):
-        """Odświeża listę użytkowników w RecycleView"""
+    def change_pin_selected(self):
+        """Pokazuje okno dialogowe do zmiany PIN użytkownika"""
         s = Settings()
         users = s.get_all_users()
 
-        user_data = []
-        for user in users:
-            # Teraz users zawiera: user_id, name, created_date, is_admin
-            if len(user) == 4:
-                user_id, name, created, is_admin = user
-                admin_badge = " [ADMIN]" if is_admin else ""
-            else:
-                # Stara wersja danych bez is_admin
-                user_id, name, created = user
-                admin_badge = ""
-                is_admin = 0
-
-            user_data.append(
-                {
-                    "text": f"{name}{admin_badge} (ID: {user_id})",
-                    "user_id": user_id,
-                    "user_name": name,
-                    "is_admin": is_admin,
-                }
-            )
-
-        if hasattr(self.ids, "user_recycler"):
-            self.ids.user_recycler.data = user_data
-
-    def select_user(self, user_id):
-        """Zaznacza wybranego użytkownika"""
-        self.selected_user_id = user_id
-
-    def change_pin_selected(self):
-        """Zmienia PIN wybranego użytkownika"""
-        if not self.selected_user_id:
-            show_error("Najpierw wybierz użytkownika z listy")
+        if not users:
+            show_error("Brak użytkowników")
             return
-        self.change_pin_for_user(self.selected_user_id)
+
+        # Tworzenie okna dialogowego z listą użytkowników
+        self.show_user_selection_dialog(users, "zmienić PIN", self.change_pin_for_user)
 
     def change_username_selected(self):
-        """Zmienia nazwę wybranego użytkownika"""
-        if not self.selected_user_id:
-            show_error("Najpierw wybierz użytkownika z listy")
-            return
-        self.change_username_for_user(self.selected_user_id)
-
-    def delete_selected_user(self):
-        """Usuwa wybranego użytkownika"""
-        if not self.selected_user_id:
-            show_error("Najpierw wybierz użytkownika z listy")
-            return
-
-        # Znajdź nazwę użytkownika i sprawdź czy to admin
+        """Pokazuje okno dialogowe do zmiany nazwy użytkownika"""
         s = Settings()
         users = s.get_all_users()
-        user_name = None
-        is_admin = False
-        for user in users:
-            if len(user) == 4:
-                uid, name, created, admin_flag = user
-                if uid == self.selected_user_id:
-                    user_name = name
-                    is_admin = admin_flag
-                    break
-            else:
-                uid, name, created = user
-                if uid == self.selected_user_id:
-                    user_name = name
-                    break
 
-        # Blokada usuwania admina
-        if is_admin:
-            show_error("Nie można usunąć użytkownika admin!")
+        if not users:
+            show_error("Brak użytkowników")
             return
 
-        if user_name:
-            self.confirm_delete_user(self.selected_user_id, user_name)
+        # Tworzenie okna dialogowego z listą użytkowników
+        self.show_user_selection_dialog(
+            users, "zmienić nazwę", self.change_username_for_user
+        )
+
+    def show_user_selection_dialog(self, users, action_text, callback):
+        """Pokazuje okno dialogowe z listą użytkowników do wyboru"""
+        content = BoxLayout(orientation="vertical", spacing=10, padding=10)
+
+        content.add_widget(
+            Label(
+                text=f"Wybierz użytkownika, któremu chcesz {action_text}:",
+                size_hint_y=None,
+                height=30,
+                color=(0.2, 0.4, 0.8, 1),
+            )
+        )
+
+        # ScrollView z listą użytkowników
+        scroll = ScrollView(size_hint=(1, 1))
+        user_list = BoxLayout(orientation="vertical", size_hint_y=None, spacing=5)
+        user_list.bind(minimum_height=user_list.setter("height"))
+
+        # Zmienna do przechowania wybranego użytkownika
+        selected_user = {"id": None}
+
+        def select_user(user_id):
+            selected_user["id"] = user_id
+
+        # Dodaj przyciski użytkowników
+        for user in users:
+            if len(user) == 4:
+                uid, name, created, is_admin = user
+            else:
+                uid, name, created = user
+                is_admin = False
+
+            btn = ToggleButton(
+                text=f"{name} (ID: {uid})" + (" [ADMIN]" if is_admin else ""),
+                size_hint_y=None,
+                height=45,
+                group="select_users",
+            )
+            btn.bind(on_press=lambda x, u=uid: select_user(u))
+            user_list.add_widget(btn)
+
+        scroll.add_widget(user_list)
+        content.add_widget(scroll)
+
+        # Tworzenie popup
+        popup = Popup(
+            title=f"Wybierz użytkownika", content=content, size_hint=(0.9, 0.7)
+        )
+
+        def confirm_selection(instance):
+            if selected_user["id"] is None:
+                show_error("Najpierw wybierz użytkownika z listy")
+                return
+
+            popup.dismiss()
+            callback(selected_user["id"])
+
+        # Przyciski akcji
+        btn_box = BoxLayout(size_hint_y=None, height=50, spacing=10)
+
+        btn_confirm = Button(text="✓ Wybierz", background_color=(0.4, 0.8, 0.6, 1))
+        btn_confirm.bind(on_press=confirm_selection)
+
+        btn_cancel = Button(text="❌ Anuluj", background_color=(0.7, 0.7, 0.7, 1))
+        btn_cancel.bind(on_press=popup.dismiss)
+
+        btn_box.add_widget(btn_confirm)
+        btn_box.add_widget(btn_cancel)
+        content.add_widget(btn_box)
+
+        popup.open()
+
+    def delete_selected_user(self):
+        """Pokazuje okno dialogowe z listą użytkowników do usunięcia"""
+        s = Settings()
+        users = s.get_all_users()
+
+        if not users:
+            show_error("Brak użytkowników do usunięcia")
+            return
+
+        # Tworzenie okna dialogowego z listą użytkowników
+        content = BoxLayout(orientation="vertical", spacing=10, padding=10)
+
+        content.add_widget(
+            Label(
+                text="Wybierz użytkownika do usunięcia:",
+                size_hint_y=None,
+                height=30,
+                color=(0.2, 0.4, 0.8, 1),
+            )
+        )
+
+        # ScrollView z listą użytkowników
+        scroll = ScrollView(size_hint=(1, 1))
+        user_list = BoxLayout(orientation="vertical", size_hint_y=None, spacing=5)
+        user_list.bind(minimum_height=user_list.setter("height"))
+
+        # Zmienna do przechowania wybranego użytkownika
+        selected_user = {"id": None, "name": None, "is_admin": False}
+
+        def select_user(user_id, user_name, is_admin):
+            selected_user["id"] = user_id
+            selected_user["name"] = user_name
+            selected_user["is_admin"] = is_admin
+
+        # Dodaj przyciski użytkowników
+        for user in users:
+            if len(user) == 4:
+                uid, name, created, is_admin = user
+            else:
+                uid, name, created = user
+                is_admin = False
+
+            btn = ToggleButton(
+                text=f"{name} (ID: {uid})",
+                size_hint_y=None,
+                height=45,
+                group="delete_users",
+                background_color=(
+                    (0.3, 0.5, 0.8, 1) if not is_admin else (0.8, 0.3, 0.3, 1)
+                ),
+            )
+            btn.bind(on_press=lambda x, u=uid, n=name, a=is_admin: select_user(u, n, a))
+            user_list.add_widget(btn)
+
+        scroll.add_widget(user_list)
+        content.add_widget(scroll)
+
+        # Tworzenie popup
+        popup = Popup(title="Usuń użytkownika", content=content, size_hint=(0.9, 0.7))
+
+        def confirm_deletion(instance):
+            if selected_user["id"] is None:
+                show_error("Najpierw wybierz użytkownika z listy")
+                return
+
+            # Blokada usuwania admina
+            if selected_user["is_admin"]:
+                show_error("Nie można usunąć użytkownika admin!")
+                return
+
+            popup.dismiss()
+            self.confirm_delete_user(selected_user["id"], selected_user["name"])
+
+        # Przyciski akcji
+        btn_box = BoxLayout(size_hint_y=None, height=50, spacing=10)
+
+        btn_confirm = Button(
+            text="🗑️ Usuń wybranego", background_color=(0.9, 0.5, 0.5, 1)
+        )
+        btn_confirm.bind(on_press=confirm_deletion)
+
+        btn_cancel = Button(text="❌ Anuluj", background_color=(0.7, 0.7, 0.7, 1))
+        btn_cancel.bind(on_press=popup.dismiss)
+
+        btn_box.add_widget(btn_confirm)
+        btn_box.add_widget(btn_cancel)
+        content.add_widget(btn_box)
+
+        popup.open()
 
     def change_pin_for_user(self, user_id):
         """Zmienia PIN dla określonego użytkownika"""
@@ -391,7 +476,6 @@ class SettingsScreen(Screen):
             try:
                 s.update_user_name(user_id, new_name_input.text.strip())
                 show_info("Nazwa użytkownika zmieniona pomyślnie")
-                self.refresh_user_list()
                 popup.dismiss()
             except Exception as e:
                 show_error(f"Błąd: {str(e)}")
@@ -539,6 +623,5 @@ class SettingsScreen(Screen):
             s = Settings()
             s.delete_user(user_id)
             show_info(f"Użytkownik {user_name} został usunięty")
-            self.refresh_user_list()
         except Exception as e:
             show_error(f"Błąd usuwania: {str(e)}")
