@@ -43,7 +43,18 @@ class WeightScreen(Screen):
             db = Database()
             db.add_weight(weight)
             self.load_weights()
-            show_info("Waga zapisana")
+
+            # Sprawdź poziom i pokaż komunikat
+            level = weight_alert(weight)
+            level_msg = {
+                AlertLevel.OK: "Pomiar w normie",
+                AlertLevel.WARNING_LOW: "Pomiar poniżej normy",
+                AlertLevel.WARNING_HIGH: "Pomiar powyżej normy",
+                AlertLevel.DANGER_LOW: "UWAGA: Pomiar znacznie poniżej normy!",
+                AlertLevel.DANGER_HIGH: "UWAGA: Pomiar znacznie powyżej normy!",
+            }.get(level, "Pomiar zapisany")
+
+            show_info(f"Waga zapisana\n{level_msg}")
         except ValidationError as e:
             show_error(str(e))
 

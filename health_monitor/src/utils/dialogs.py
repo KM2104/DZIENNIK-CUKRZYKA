@@ -8,9 +8,9 @@ def show_error(message: str):
 
 
 def show_info(message: str):
-    """Wyświetla okno informacyjne, które automatycznie zamyka się po 1 sekundzie"""
+    """Wyświetla okno informacyjne, które automatycznie zamyka się po 1.5 sekundy"""
     popup = Popup(title="Informacja", content=Label(text=message), size_hint=(0.8, 0.3))
     popup.open()
 
-    # Automatyczne zamknięcie po 1 sekundzie
-    Clock.schedule_once(lambda dt: popup.dismiss(), 1)
+    # Automatyczne zamknięcie po 1.5 sekundy
+    Clock.schedule_once(lambda dt: popup.dismiss(), 1.5)

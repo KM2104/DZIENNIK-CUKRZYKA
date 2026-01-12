@@ -44,7 +44,18 @@ class HeartRateScreen(Screen):
             db = Database()
             db.add_heartrate(heartrate)
             self.load_heartrates()
-            show_info("Tętno zapisane")
+
+            # Sprawdź poziom i pokaż komunikat
+            level = heartrate_alert(heartrate)
+            level_msg = {
+                AlertLevel.OK: "Pomiar w normie",
+                AlertLevel.WARNING_LOW: "Pomiar poniżej normy",
+                AlertLevel.WARNING_HIGH: "Pomiar powyżej normy",
+                AlertLevel.DANGER_LOW: "UWAGA: Pomiar znacznie poniżej normy!",
+                AlertLevel.DANGER_HIGH: "UWAGA: Pomiar znacznie powyżej normy!",
+            }.get(level, "Pomiar zapisany")
+
+            show_info(f"Tętno zapisane\n{level_msg}")
         except ValidationError as e:
             show_error(str(e))
 

@@ -73,7 +73,18 @@ class GlucoseScreen(Screen):
             db = Database()
             db.add_glucose(glucose, measurement_datetime, timing)
             self.load_glucose()
-            show_info("Glukoza zapisana")
+
+            # Sprawdź poziom i pokaż komunikat
+            level = glucose_alert(glucose)
+            level_msg = {
+                AlertLevel.OK: "Pomiar w normie",
+                AlertLevel.WARNING_LOW: "Pomiar poniżej normy",
+                AlertLevel.WARNING_HIGH: "Pomiar powyżej normy",
+                AlertLevel.DANGER_LOW: "UWAGA: Pomiar znacznie poniżej normy!",
+                AlertLevel.DANGER_HIGH: "UWAGA: Pomiar znacznie powyżej normy!",
+            }.get(level, "Pomiar zapisany")
+
+            show_info(f"Glukoza zapisana\n{level_msg}")
         except ValidationError as e:
             show_error(str(e))
 

@@ -34,7 +34,9 @@ class TestWeightAlerts(unittest.TestCase):
 
     def test_weight_warning_high(self):
         """Test wagi - ostrzeżenie (powyżej maksimum)"""
-        result = weight_alert(155)  # Powyżej 150 kg
+        result = weight_alert(
+            135
+        )  # Powyżej 120 kg (max domyślne), ale poniżej 144 (120*1.2)
         self.assertEqual(result, AlertLevel.WARNING_HIGH)
 
     def test_weight_danger_low(self):

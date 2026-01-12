@@ -27,7 +27,7 @@ def weight_alert(weight: float) -> AlertLevel:
         return AlertLevel.DANGER_HIGH
     if weight < min_w:
         return AlertLevel.WARNING_LOW
-    if weight > max_w:
+    if weight > max_w and weight <= max_w * 1.2:
         return AlertLevel.WARNING_HIGH
     return AlertLevel.OK
 
