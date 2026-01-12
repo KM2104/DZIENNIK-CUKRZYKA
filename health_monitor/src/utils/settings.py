@@ -83,6 +83,14 @@ class Settings:
         """Usuwa użytkownika"""
         self.db.delete_user(user_id)
 
+    def is_admin(self, user_id: int):
+        """Sprawdza czy użytkownik jest administratorem"""
+        return self.db.is_admin(user_id)
+
+    def update_user_name(self, user_id: int, new_name: str):
+        """Aktualizuje nazwę użytkownika"""
+        self.db.update_user_name(user_id, new_name)
+
     def change_user_pin(self, user_id: int, old_pin: str, new_pin: str):
         """Zmienia PIN użytkownika po weryfikacji starego PIN"""
         if self.db.verify_user_pin(user_id, old_pin):

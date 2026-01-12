@@ -73,7 +73,8 @@ class Database:
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             pin TEXT NOT NULL,
-            created_date TEXT
+            created_date TEXT,
+            is_admin INTEGER DEFAULT 0
         )
         """
         )
@@ -83,6 +84,23 @@ class Database:
         # Migracja: Dodaj brakujące kolumny do istniejącej tabeli glucose
         self._migrate_glucose_table()
         self._migrate_user_columns()
+        self._create_admin_user()
+
+    def _create_admin_user(self):
+        """Tworzy domyślnego użytkownika admin jeśli nie istnieje"""
+        cur = self.conn.cursor()
+
+        # Sprawdź czy istnieje użytkownik admin
+        cur.execute("SELECT id FROM users WHERE is_admin = 1")
+        admin_exists = cur.fetchone()
+
+        if not admin_exists:
+            # Dodaj użytkownika admin z hasłem 1111
+            cur.execute(
+                "INSERT INTO users (name, pin, created_date, is_admin) VALUES (?, ?, ?, ?)",
+                ("admin", "1111", datetime.now().isoformat(), 1),
+            )
+            self.conn.commit()
 
     def _migrate_glucose_table(self):
         """Dodaje nowe kolumny do tabeli glucose jeśli ich nie ma"""
@@ -112,6 +130,14 @@ class Database:
             if "user_id" not in columns:
                 cur.execute(f"ALTER TABLE {table} ADD COLUMN user_id INTEGER DEFAULT 1")
                 self.conn.commit()
+
+        # Migracja: Dodaj kolumnę is_admin do tabeli users jeśli jej nie ma
+        cur.execute("PRAGMA table_info(users)")
+        columns = [row[1] for row in cur.fetchall()]
+
+        if "is_admin" not in columns:
+            cur.execute("ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0")
+            self.conn.commit()
 
     def add_weight(self, value):
         self.conn.execute(
@@ -220,7 +246,7 @@ class Database:
     def get_all_users(self):
         """Pobiera listę wszystkich użytkowników"""
         cur = self.conn.cursor()
-        cur.execute("SELECT id, name, created_date FROM users ORDER BY name")
+        cur.execute("SELECT id, name, created_date, is_admin FROM users ORDER BY name")
         return cur.fetchall()
 
     def verify_user_pin(self, user_id: int, pin: str):
@@ -230,14 +256,33 @@ class Database:
         row = cur.fetchone()
         return row and row[0] == pin
 
+    def is_admin(self, user_id: int):
+        """Sprawdza czy użytkownik jest administratorem"""
+        cur = self.conn.cursor()
+        cur.execute("SELECT is_admin FROM users WHERE id = ?", (user_id,))
+        row = cur.fetchone()
+        return row and row[0] == 1
+
+    def update_user_name(self, user_id: int, new_name: str):
+        """Aktualizuje nazwę użytkownika"""
+        self.conn.execute("UPDATE users SET name = ? WHERE id = ?", (new_name, user_id))
+        self.conn.commit()
+
     def update_user_pin(self, user_id: int, new_pin: str):
         """Aktualizuje PIN użytkownika"""
         self.conn.execute("UPDATE users SET pin = ? WHERE id = ?", (new_pin, user_id))
         self.conn.commit()
 
     def delete_user(self, user_id: int):
-        """Usuwa użytkownika (tylko jeśli nie jest jedynym)"""
+        """Usuwa użytkownika (tylko jeśli nie jest jedynym i nie jest adminem)"""
         cur = self.conn.cursor()
+
+        # Sprawdź czy użytkownik jest adminem
+        cur.execute("SELECT is_admin FROM users WHERE id = ?", (user_id,))
+        row = cur.fetchone()
+        if row and row[0] == 1:
+            raise ValueError("Nie można usunąć użytkownika admin")
+
         cur.execute("SELECT COUNT(*) FROM users")
         count = cur.fetchone()[0]
 

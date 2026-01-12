@@ -30,10 +30,24 @@ class WeightHistoryScreen(Screen):
         for idx, (value, date) in enumerate(records):
             level = weight_alert(value)
             color = {
-                AlertLevel.OK: (0.2, 0.8, 0.2, 1),
-                AlertLevel.WARNING: (1, 0.6, 0, 1),
-                AlertLevel.DANGER: (1, 0.2, 0.2, 1),
-            }[level]
+                AlertLevel.OK: (0, 0, 0, 1),  # Czarny - norma
+                AlertLevel.WARNING_LOW: (0, 0, 1, 1),  # Niebieski - poniżej normy
+                AlertLevel.WARNING_HIGH: (1, 0, 0, 1),  # Czerwony - ponad normę
+                AlertLevel.DANGER_LOW: (
+                    0,
+                    0,
+                    0.8,
+                    1,
+                ),  # Ciemnoniebieski - niebezpiecznie niskie
+                AlertLevel.DANGER_HIGH: (
+                    0.8,
+                    0,
+                    0,
+                    1,
+                ),  # Ciemnoczerwony - niebezpiecznie wysokie
+            }.get(
+                level, (0, 0, 0, 1)
+            )  # Domyślnie czarny
 
             # Numer pomiaru (0 = najstarszy, jak na wykresie)
             if self.ascending:

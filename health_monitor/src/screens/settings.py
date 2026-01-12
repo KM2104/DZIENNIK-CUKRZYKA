@@ -9,10 +9,20 @@ from kivy.uix.scrollview import ScrollView
 from utils.settings import Settings
 from utils.dialogs import show_info, show_error
 from utils.backup import backup_database, restore_database
+from utils.export_csv import (
+    export_weights_csv,
+    export_pressure_csv,
+    export_heartrate_csv,
+    export_glucose_csv,
+)
+from utils.paths import get_export_dir
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
+from db.database import Database
+from datetime import datetime
+import os
 
 
 class SettingsScreen(Screen):
@@ -160,6 +170,57 @@ class SettingsScreen(Screen):
 
         popup.open()
 
+    def change_username(self):
+        """Otwiera dialog zmiany nazwy użytkownika"""
+        content = BoxLayout(orientation="vertical", spacing=10, padding=10)
+
+        new_name_input = TextInput(
+            hint_text="Nowa nazwa użytkownika",
+            multiline=False,
+            size_hint_y=None,
+            height=40,
+        )
+
+        content.add_widget(
+            Label(
+                text="Zmiana nazwy użytkownika", size_hint_y=None, height=30, bold=True
+            )
+        )
+        content.add_widget(new_name_input)
+
+        btn_layout = BoxLayout(size_hint_y=None, height=50, spacing=10)
+
+        popup = Popup(title="Zmiana nazwy", content=content, size_hint=(0.8, 0.4))
+
+        def confirm_change(instance):
+            if not new_name_input.text.strip():
+                show_error("Wprowadź nową nazwę użytkownika")
+                return
+
+            s = Settings()
+            user_id = s.get_current_user_id()
+
+            try:
+                s.update_user_name(user_id, new_name_input.text.strip())
+                show_info("Nazwa użytkownika zmieniona pomyślnie")
+                self.refresh_user_list()
+                popup.dismiss()
+            except Exception as e:
+                show_error(f"Błąd: {str(e)}")
+
+        btn_ok = Button(
+            text="Zmień", on_press=confirm_change, background_color=(0.4, 0.8, 0.6, 1)
+        )
+        btn_cancel = Button(
+            text="Anuluj", on_press=popup.dismiss, background_color=(0.8, 0.4, 0.4, 1)
+        )
+
+        btn_layout.add_widget(btn_ok)
+        btn_layout.add_widget(btn_cancel)
+        content.add_widget(btn_layout)
+
+        popup.open()
+
     def add_new_user(self):
         """Otwiera dialog dodawania nowego użytkownika"""
         content = BoxLayout(orientation="vertical", spacing=10, padding=10)
@@ -237,8 +298,15 @@ class SettingsScreen(Screen):
 
         user_list_text = "Użytkownicy:\n\n"
         for user in users:
-            user_id, name, created = user
-            user_list_text += f"• {name} (ID: {user_id})\n"
+            # Teraz users zawiera: user_id, name, created_date, is_admin
+            if len(user) == 4:
+                user_id, name, created, is_admin = user
+                admin_badge = " [ADMIN]" if is_admin else ""
+                user_list_text += f"• {name}{admin_badge} (ID: {user_id})\n"
+            else:
+                # Stara wersja danych bez is_admin
+                user_id, name, created = user
+                user_list_text += f"• {name} (ID: {user_id})\n"
 
         if hasattr(self.ids, "user_list"):
             self.ids.user_list.text = user_list_text
@@ -258,3 +326,186 @@ class SettingsScreen(Screen):
             show_info("Backup przywrócony")
         except Exception as e:
             show_error(str(e))
+
+    def delete_user_dialog(self):
+        """Otwiera dialog wyboru użytkownika do usunięcia z opcją zapisu danych"""
+        s = Settings()
+        db = Database()
+        users = s.get_all_users()
+        current_user_id = s.get_current_user_id()
+
+        if not users or len(users) <= 1:
+            show_error("Nie można usunąć jedynego użytkownika w systemie")
+            return
+
+        content = BoxLayout(orientation="vertical", spacing=10, padding=10)
+        content.add_widget(
+            Label(
+                text="Wybierz użytkownika do usunięcia:",
+                size_hint_y=None,
+                height=40,
+                bold=True,
+            )
+        )
+
+        popup = Popup(
+            title="Usuwanie użytkownika", content=content, size_hint=(0.9, 0.7)
+        )
+
+        for user in users:
+            if len(user) == 4:
+                user_id, name, created, is_admin = user
+                admin_badge = " [ADMIN]" if is_admin else ""
+            else:
+                user_id, name, created = user
+                admin_badge = ""
+                is_admin = 0
+
+            # Nie pozwalaj usuwać admina
+            if is_admin:
+                continue
+
+            def make_handler(uid, uname):
+                def handler(instance):
+                    popup.dismiss()
+                    self.confirm_delete_user(uid, uname)
+
+                return handler
+
+            btn = Button(
+                text=f"{name}{admin_badge} (ID: {user_id})",
+                size_hint_y=None,
+                height=50,
+                background_color=(0.9, 0.5, 0.5, 1),
+            )
+            btn.bind(on_press=make_handler(user_id, name))
+            content.add_widget(btn)
+
+        btn_cancel = Button(
+            text="Anuluj",
+            size_hint_y=None,
+            height=50,
+            background_color=(0.7, 0.7, 0.7, 1),
+            on_press=popup.dismiss,
+        )
+        content.add_widget(btn_cancel)
+
+        popup.open()
+
+    def confirm_delete_user(self, user_id, user_name):
+        """Potwierdza usunięcie użytkownika i oferuje eksport danych"""
+        content = BoxLayout(orientation="vertical", spacing=10, padding=10)
+
+        content.add_widget(
+            Label(
+                text=f"Czy na pewno chcesz usunąć użytkownika:\n{user_name}?",
+                size_hint_y=None,
+                height=60,
+                bold=True,
+            )
+        )
+
+        content.add_widget(
+            Label(
+                text="Przed usunięciem możesz zapisać jego wyniki do pliku CSV.",
+                size_hint_y=None,
+                height=40,
+                color=(0.7, 0.4, 0, 1),
+            )
+        )
+
+        btn_layout = BoxLayout(
+            orientation="vertical", spacing=5, size_hint_y=None, height=160
+        )
+
+        popup = Popup(
+            title=f"Usuwanie: {user_name}", content=content, size_hint=(0.9, 0.6)
+        )
+
+        def export_and_delete(instance):
+            """Eksportuje dane użytkownika i usuwa go"""
+            try:
+                self.export_user_data(user_id, user_name)
+                self.delete_user_confirmed(user_id, user_name)
+                popup.dismiss()
+            except Exception as e:
+                show_error(f"Błąd podczas eksportu: {str(e)}")
+
+        def delete_without_export(instance):
+            """Usuwa użytkownika bez eksportu"""
+            self.delete_user_confirmed(user_id, user_name)
+            popup.dismiss()
+
+        btn_export = Button(
+            text="💾 Zapisz dane i usuń użytkownika",
+            background_color=(0.4, 0.7, 0.9, 1),
+            size_hint_y=None,
+            height=50,
+            on_press=export_and_delete,
+        )
+
+        btn_delete = Button(
+            text="🗑️ Usuń bez zapisu",
+            background_color=(0.9, 0.4, 0.4, 1),
+            size_hint_y=None,
+            height=50,
+            on_press=delete_without_export,
+        )
+
+        btn_cancel = Button(
+            text="Anuluj",
+            background_color=(0.7, 0.7, 0.7, 1),
+            size_hint_y=None,
+            height=50,
+            on_press=popup.dismiss,
+        )
+
+        btn_layout.add_widget(btn_export)
+        btn_layout.add_widget(btn_delete)
+        btn_layout.add_widget(btn_cancel)
+        content.add_widget(btn_layout)
+
+        popup.open()
+
+    def export_user_data(self, user_id, user_name):
+        """Eksportuje wszystkie dane użytkownika do plików CSV"""
+        db = Database()
+        export_dir = get_export_dir()
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        # Pobierz wszystkie pomiary użytkownika
+        weights = db.get_weights(limit=10000)
+        pressures = db.get_pressures(limit=10000)
+        heartrates = db.get_heartrates(limit=10000)
+        glucoses = db.get_glucose(limit=10000)
+
+        # Eksportuj do CSV
+        base_filename = f"{user_name}_{timestamp}"
+
+        if weights:
+            filepath = os.path.join(export_dir, f"{base_filename}_waga.csv")
+            export_weights_csv(weights, filepath)
+
+        if pressures:
+            filepath = os.path.join(export_dir, f"{base_filename}_cisnienie.csv")
+            export_pressure_csv(pressures, filepath)
+
+        if heartrates:
+            filepath = os.path.join(export_dir, f"{base_filename}_tetno.csv")
+            export_heartrate_csv(heartrates, filepath)
+
+        if glucoses:
+            filepath = os.path.join(export_dir, f"{base_filename}_glukoza.csv")
+            export_glucose_csv(glucoses, filepath)
+
+        show_info(f"Dane użytkownika {user_name} zapisane w:\n{export_dir}")
+
+    def delete_user_confirmed(self, user_id, user_name):
+        """Usuwa użytkownika po potwierdzeniu"""
+        try:
+            s = Settings()
+            s.delete_user(user_id)
+            show_info(f"Użytkownik {user_name} został usunięty")
+            self.refresh_user_list()
+        except Exception as e:
+            show_error(f"Błąd usuwania: {str(e)}")

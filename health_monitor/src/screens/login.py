@@ -65,7 +65,14 @@ class LoginScreen(Screen):
         popup = Popup(title="Wybór użytkownika", content=content, size_hint=(0.8, 0.6))
 
         for user in users:
-            user_id, name, created = user
+            # Teraz users zawiera: user_id, name, created_date, is_admin
+            if len(user) == 4:
+                user_id, name, created, is_admin = user
+                admin_badge = " [ADMIN]" if is_admin else ""
+            else:
+                # Stara wersja danych bez is_admin
+                user_id, name, created = user
+                admin_badge = ""
 
             def make_handler(uid, uname):
                 def handler(instance):
@@ -78,7 +85,7 @@ class LoginScreen(Screen):
                 return handler
 
             btn = Button(
-                text=f"{name}",
+                text=f"{name}{admin_badge}",
                 size_hint_y=None,
                 height=50,
                 background_color=(0.5, 0.7, 0.9, 1),

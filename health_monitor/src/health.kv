@@ -49,7 +49,7 @@
             text: "⚙️ Ustawienia Użytkownika"
             background_color: 0.8, 0.7, 0.9, 1  # Lawendowy
             font_size: "22sp"
-            on_press: app.root.current = "settings"
+            on_press: root.go_to_settings()
 
         Button:
             text: "🔓 Zmień użytkownika"
@@ -537,7 +537,7 @@
                     cols: 2
                     spacing: 5
                     size_hint_y: None
-                    height: "50sp"
+                    height: "100sp"
                     
                     Button:
                         text: "🔐 Zmień PIN"
@@ -546,10 +546,22 @@
                         on_press: root.change_pin()
                     
                     Button:
+                        text: "✏️ Zmień nazwę"
+                        background_color: 0.6, 0.7, 0.9, 1
+                        font_size: "16sp"
+                        on_press: root.change_username()
+                    
+                    Button:
                         text: "➕ Dodaj użytkownika"
                         background_color: 0.5, 0.8, 0.7, 1
                         font_size: "16sp"
                         on_press: root.add_new_user()
+                    
+                    Button:
+                        text: "🗑️ Usuń użytkownika"
+                        background_color: 0.9, 0.5, 0.5, 1
+                        font_size: "16sp"
+                        on_press: root.delete_user_dialog()
 
                 # === SEKCJA BACKUP ===
                 Label:

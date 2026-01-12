@@ -14,6 +14,19 @@ def get_export_path(filename):
         return f"/sdcard/Download/{filename}"
     return os.path.join(os.getcwd(), filename)
 
+
+def get_export_dir():
+    """Zwraca ścieżkę do katalogu eksportu plików"""
+    if platform == "android":
+        export_dir = "/sdcard/Download"
+    else:
+        export_dir = os.path.join(os.getcwd(), "exports")
+        # Utwórz katalog jeśli nie istnieje
+        if not os.path.exists(export_dir):
+            os.makedirs(export_dir)
+    return export_dir
+
+
 def get_app_data_dir():
     if platform == "android":
         return "/sdcard/HealthMonitor"

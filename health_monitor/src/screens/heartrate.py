@@ -28,9 +28,11 @@ class HeartRateScreen(Screen):
             level = heartrate_alert(value)
             color = {
                 AlertLevel.OK: (1, 1, 1, 1),
-                AlertLevel.WARNING: (1, 0.6, 0, 1),
-                AlertLevel.DANGER: (1, 0, 0, 1),
-            }[level]
+                AlertLevel.WARNING_LOW: (0.6, 0.6, 1, 1),
+                AlertLevel.WARNING_HIGH: (1, 0.6, 0.6, 1),
+                AlertLevel.DANGER_LOW: (0.4, 0.4, 1, 1),
+                AlertLevel.DANGER_HIGH: (1, 0.4, 0.4, 1),
+            }.get(level, (1, 1, 1, 1))
 
             self.heartrates.append(
                 {"text": f"{value} bpm  |  {date[:16]}", "color": color}
