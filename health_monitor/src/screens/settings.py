@@ -9,7 +9,7 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.togglebutton import ToggleButton
 from utils.settings import Settings
 from utils.dialogs import show_info, show_error
-from utils.backup import backup_database, restore_database
+from utils.backup import backup_database, restore_database, list_backups
 from utils.export_csv import (
     export_weights_csv,
     export_pressure_csv,
@@ -365,9 +365,7 @@ class SettingsScreen(Screen):
         # Przyciski akcji
         btn_box = BoxLayout(size_hint_y=None, height=50, spacing=10)
 
-        btn_confirm = Button(
-            text="Usuń wybranego", background_color=(0.9, 0.5, 0.5, 1)
-        )
+        btn_confirm = Button(text="Usuń wybranego", background_color=(0.9, 0.5, 0.5, 1))
         btn_confirm.bind(on_press=confirm_deletion)
 
         btn_cancel = Button(text="Anuluj", background_color=(0.7, 0.7, 0.7, 1))
@@ -494,20 +492,217 @@ class SettingsScreen(Screen):
         popup.open()
 
     def backup(self):
-        try:
-            path = backup_database()
-            show_info(f"Backup zapisany:\n{path}")
-        except Exception as e:
-            show_error(str(e))
+        """Pokazuje dialog wyboru lokalizacji backupu"""
+        content = BoxLayout(orientation="vertical", spacing=10, padding=10)
+
+        content.add_widget(
+            Label(
+                text="Wybierz lokalizację zapisu kopii zapasowej:",
+                size_hint_y=None,
+                height=40,
+                bold=True,
+            )
+        )
+
+        btn_layout = BoxLayout(
+            orientation="vertical", spacing=10, size_hint_y=None, height=120
+        )
+
+        popup = Popup(title="Wykonaj backup", content=content, size_hint=(0.8, 0.4))
+
+        def backup_to_app(instance):
+            """Zapisz backup w folderze aplikacji"""
+            try:
+                path = backup_database(location="app")
+                popup.dismiss()
+                show_info(f"Backup zapisany w folderze aplikacji:\n{path}")
+            except Exception as e:
+                show_error(f"Błąd zapisu: {str(e)}")
+
+        def backup_to_sdcard(instance):
+            """Zapisz backup na karcie SD"""
+            try:
+                path = backup_database(location="sdcard")
+                popup.dismiss()
+                show_info(f"Backup zapisany na karcie pamięci:\n{path}")
+            except Exception as e:
+                show_error(f"Błąd zapisu: {str(e)}")
+
+        btn_app = Button(
+            text="Folder aplikacji",
+            background_color=(0.4, 0.7, 0.9, 1),
+            size_hint_y=None,
+            height=50,
+            on_press=backup_to_app,
+        )
+
+        btn_sdcard = Button(
+            text="Karta pamięci (SD)",
+            background_color=(0.4, 0.8, 0.6, 1),
+            size_hint_y=None,
+            height=50,
+            on_press=backup_to_sdcard,
+        )
+
+        btn_cancel = Button(
+            text="Anuluj",
+            background_color=(0.7, 0.7, 0.7, 1),
+            size_hint_y=None,
+            height=50,
+            on_press=popup.dismiss,
+        )
+
+        btn_layout.add_widget(btn_app)
+        btn_layout.add_widget(btn_sdcard)
+        content.add_widget(btn_layout)
+        content.add_widget(btn_cancel)
+
+        popup.open()
 
     def restore(self):
-        # na start zakładamy stałą nazwę
-        path = "/sdcard/HealthMonitor/health_backup_last.db"
-        try:
-            restore_database(path)
-            show_info("Backup przywrócony")
-        except Exception as e:
-            show_error(str(e))
+        """Pokazuje dialog wyboru źródła przywracania backupu"""
+        content = BoxLayout(orientation="vertical", spacing=10, padding=10)
+
+        content.add_widget(
+            Label(
+                text="Wybierz źródło kopii zapasowej:",
+                size_hint_y=None,
+                height=40,
+                bold=True,
+            )
+        )
+
+        btn_layout = BoxLayout(
+            orientation="vertical", spacing=10, size_hint_y=None, height=120
+        )
+
+        popup = Popup(title="Przywróć backup", content=content, size_hint=(0.8, 0.4))
+
+        def restore_from_app(instance):
+            """Przywróć backup z folderu aplikacji"""
+            popup.dismiss()
+            self.show_backup_list("app")
+
+        def restore_from_sdcard(instance):
+            """Przywróć backup z karty SD"""
+            popup.dismiss()
+            self.show_backup_list("sdcard")
+
+        btn_app = Button(
+            text="Folder aplikacji",
+            background_color=(0.4, 0.7, 0.9, 1),
+            size_hint_y=None,
+            height=50,
+            on_press=restore_from_app,
+        )
+
+        btn_sdcard = Button(
+            text="Karta pamięci (SD)",
+            background_color=(0.4, 0.8, 0.6, 1),
+            size_hint_y=None,
+            height=50,
+            on_press=restore_from_sdcard,
+        )
+
+        btn_cancel = Button(
+            text="Anuluj",
+            background_color=(0.7, 0.7, 0.7, 1),
+            size_hint_y=None,
+            height=50,
+            on_press=popup.dismiss,
+        )
+
+        btn_layout.add_widget(btn_app)
+        btn_layout.add_widget(btn_sdcard)
+        content.add_widget(btn_layout)
+        content.add_widget(btn_cancel)
+
+        popup.open()
+
+    def show_backup_list(self, location):
+        """Pokazuje listę dostępnych backupów z wybranej lokalizacji"""
+        backups = list_backups(location)
+
+        if not backups:
+            location_name = (
+                "folderze aplikacji" if location == "app" else "karcie pamięci"
+            )
+            show_error(f"Brak kopii zapasowych w {location_name}")
+            return
+
+        content = BoxLayout(orientation="vertical", spacing=10, padding=10)
+
+        location_name = "folder aplikacji" if location == "app" else "karta pamięci"
+        content.add_widget(
+            Label(
+                text=f"Wybierz kopię zapasową z: {location_name}",
+                size_hint_y=None,
+                height=40,
+                bold=True,
+            )
+        )
+
+        # ScrollView z listą backupów
+        scroll = ScrollView(size_hint=(1, 1))
+        backup_list = BoxLayout(orientation="vertical", size_hint_y=None, spacing=5)
+        backup_list.bind(minimum_height=backup_list.setter("height"))
+
+        # Zmienna do przechowania wybranego backupu
+        selected_backup = {"path": None}
+
+        def select_backup(backup_path):
+            selected_backup["path"] = backup_path
+
+        # Dodaj przyciski backupów
+        for filepath, mtime, filename in backups:
+            # Formatuj datę
+            from datetime import datetime
+
+            date_str = datetime.fromtimestamp(mtime).strftime("%Y-%m-%d %H:%M:%S")
+
+            btn = ToggleButton(
+                text=f"{filename}\n{date_str}",
+                size_hint_y=None,
+                height=60,
+                group="select_backup",
+            )
+            btn.bind(on_press=lambda x, p=filepath: select_backup(p))
+            backup_list.add_widget(btn)
+
+        scroll.add_widget(backup_list)
+        content.add_widget(scroll)
+
+        # Tworzenie popup
+        popup = Popup(title="Wybierz backup", content=content, size_hint=(0.9, 0.7))
+
+        def confirm_restore(instance):
+            if selected_backup["path"] is None:
+                show_error("Najpierw wybierz backup z listy")
+                return
+
+            try:
+                restore_database(selected_backup["path"])
+                popup.dismiss()
+                show_info("Backup przywrócony pomyślnie!\nUruchom aplikację ponownie.")
+            except Exception as e:
+                show_error(f"Błąd przywracania: {str(e)}")
+
+        # Przyciski akcji
+        btn_box = BoxLayout(size_hint_y=None, height=50, spacing=10)
+
+        btn_confirm = Button(
+            text="Przywróć wybrany", background_color=(0.4, 0.8, 0.6, 1)
+        )
+        btn_confirm.bind(on_press=confirm_restore)
+
+        btn_cancel = Button(text="Anuluj", background_color=(0.7, 0.7, 0.7, 1))
+        btn_cancel.bind(on_press=popup.dismiss)
+
+        btn_box.add_widget(btn_confirm)
+        btn_box.add_widget(btn_cancel)
+        content.add_widget(btn_box)
+
+        popup.open()
 
     def confirm_delete_user(self, user_id, user_name):
         """Potwierdza usunięcie użytkownika i oferuje eksport danych"""
