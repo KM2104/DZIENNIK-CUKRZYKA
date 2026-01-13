@@ -1,0 +1,182 @@
+Poniżej znajdziesz konkretne, techniczne wyjaśnienie, jak VS Code , WSL i Kivy współpracują ze sobą oraz jak wygląda realny workflow przy takim projekcie. Skupię się na praktyce, nie na teorii.
+
+1. WSL – czym jest i dlaczego ma sens w Twoim przypadku
+   Czym jest WSL
+    WSL (Windows Subsystem for Linux) to wbudowany w Windows mechanizm, który pozwala uruchomić pełnoprawny Linux (najczęściej Ubuntu) bez maszyny wirtualnej.
+
+   Dla Ciebie oznacza to:
+    brak dual-boot
+    brak VirtualBoxa
+    integrację z Windows
+    dostęp do narzędzi linuksowych (Buildozer!)
+
+   Dlaczego WSL jest kluczowy dla Kivy + Android
+    Buildozer (narzędzie do budowy APK) działa tylko na Linuxie
+    Android SDK / NDK jest natywnie wspierany pod Linux
+    WSL jest oficjalnie wspierany przez Microsoft i VS Code
+
+   Bez WSL:
+    na Windowsie nie zbudujesz APK
+
+   Z WSL:
+    piszesz kod na Windowsie
+    budujesz APK w Linuxie
+    testujesz na telefonie
+
+2. Integracja WSL z VS Code (najwygodniejsza opcja)
+   Co dostajesz
+    Edytujesz pliki jak zwykle w VS Code
+    Terminal działa w Ubuntu
+    Python, pip, buildozer → Linux
+    Debugowanie jak lokalnie
+
+   Instalacja WSL (jedna komenda)
+   W PowerShell (jako Administrator):
+    wsl --install
+
+   Domyślnie zainstaluje:
+    Ubuntu
+    WSL 2
+
+   Po restarcie w bash terminal:
+    wsl
+
+VS Code + WSL
+
+   Zainstaluj rozszerzenie:
+    Remote – WSL
+
+    Otwórz projekt:
+        Ctrl + Shift + P
+        Remote-WSL: Open Folder
+
+    Od tego momentu:
+        VS Code działa na Windows
+        Kod i Python działają w Linuxie
+
+    To jest bardzo ważne – nie mieszaj interpreterów.
+
+3. Visual Studio 2022 – czy ma sens?
+   Krótko:
+    VS Code → TAK
+    Visual Studio 2022 → NIE do Kivy
+
+   VS 2022:
+    świetny do .NET, C++, C#
+    brak sensownego wsparcia dla:
+        Kivy
+        Buildozer
+        Android (Python)
+
+   Możesz:
+    pisać backend w Pythonie → OK
+    GUI + Android → VS Code jest lepszy
+
+4. Kivy – jak działa i jak się w nim pracuje
+   Co to jest Kivy
+    Framework GUI w Pythonie
+    Silnik renderujący (OpenGL)
+    UI opisujesz w plikach .kv
+    Logika w .py
+
+    Struktura projektu (przykład)
+    health_app/
+    ├── main.py
+    ├── health.kv
+    ├── database/
+    │   └── db.py
+    ├── models/
+    │   └── measurements.py
+    └── buildozer.spec
+
+   Jak wygląda kod (minimum)
+    main.py
+    from kivy.app import App
+    from kivy.uix.boxlayout import BoxLayout
+
+    class MainLayout(BoxLayout):
+        pass
+
+    class HealthApp(App):
+        def build(self):
+            return MainLayout()
+
+    if __name__ == "__main__":
+        HealthApp().run()
+
+   health.kv
+    MainLayout:
+        orientation: "vertical"
+
+        Label:
+            text: "Monitor zdrowia"
+
+        Button:
+            text: "Dodaj pomiar wagi"               
+
+   Uruchamiasz:
+    python main.py
+
+   To działa identycznie na Windows i Androidzie.
+
+5. Buildozer – jak wygląda proces technicznie
+   Co robi Buildozer
+    pobiera Android SDK / NDK
+    pakuje Pythona
+    kompiluje APK
+    instaluje aplikację
+
+   Instalacja (w WSL) - bash
+    sudo apt update
+    sudo apt install -y python3-pip git zip unzip openjdk-17-jdk
+    pip install buildozer
+
+   W katalogu projektu:
+    buildozer init
+
+   To wygeneruje:
+    buildozer.spec
+
+   Najważniejsze ustawienia:
+    requirements = python3,kivy
+    package.name = HealthMonitor
+    package.domain = org.example 
+
+   Budowa APK: bash
+    buildozer android debug
+
+6. Testowanie na Androidzie
+   Opcje:
+    Fizyczny telefon (najlepsze)
+        USB debugging
+        buildozer android deploy run
+
+    Emulator
+        działa, ale wolniej
+
+7. Typowy workflow (jak będziesz pracował na co dzień)
+    VS Code (Windows)
+    Projekt otwarty przez Remote WSL
+    Piszesz Python + Kivy
+    Testujesz: bash
+        python main.py
+
+    Gdy gotowe:bash
+        buildozer android debug
+
+    Instalujesz APK na telefonie
+        Jedno repozytorium, jedna aplikacja
+
+8. Ograniczenia, o których warto wiedzieć
+    Kivy:
+        UI bardziej „techniczne” niż Material Design
+        ale bardzo stabilne
+
+    Buildozer:
+        pierwsza kompilacja trwa długo
+        potem już szybko
+
+    Android:
+        brak natywnego wyglądu Android UI
+
+Dla aplikacji zdrowotnej to nie jest problem.

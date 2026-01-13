@@ -226,7 +226,6 @@ class SettingsScreen(Screen):
                 text=f"Wybierz użytkownika, któremu chcesz {action_text}:",
                 size_hint_y=None,
                 height=30,
-                color=(0.2, 0.4, 0.8, 1),
             )
         )
 
@@ -306,7 +305,6 @@ class SettingsScreen(Screen):
                 text="Wybierz użytkownika do usunięcia:",
                 size_hint_y=None,
                 height=30,
-                color=(0.2, 0.4, 0.8, 1),
             )
         )
 
@@ -404,7 +402,12 @@ class SettingsScreen(Screen):
         )
 
         content.add_widget(
-            Label(text="Zmiana PIN", size_hint_y=None, height=30, bold=True)
+            Label(
+                text="Zmiana PIN",
+                size_hint_y=None,
+                height=30,
+                bold=True,
+            )
         )
         content.add_widget(old_pin_input)
         content.add_widget(new_pin_input)
@@ -456,7 +459,10 @@ class SettingsScreen(Screen):
 
         content.add_widget(
             Label(
-                text="Zmiana nazwy użytkownika", size_hint_y=None, height=30, bold=True
+                text="Zmiana nazwy użytkownika",
+                size_hint_y=None,
+                height=30,
+                bold=True,
             )
         )
         content.add_widget(new_name_input)

@@ -1,6 +1,6 @@
 """
 Docstring for health_monitor.src.utils.alerts
-Warstwa alertów zdrowotnych - kolorowanie i komunikaty  
+Warstwa alertów zdrowotnych - kolorowanie i komunikaty
 """
 
 from kivy.uix.popup import Popup
@@ -15,11 +15,7 @@ def show_health_alert(level: AlertLevel):
     title = "Alert zdrowotny"
     message = {
         AlertLevel.WARNING: "Wynik poza normą",
-        AlertLevel.DANGER: "Wynik niebezpieczny – skonsultuj się z lekarzem"
+        AlertLevel.DANGER: "Wynik niebezpieczny – skonsultuj się z lekarzem",
     }[level]
 
-    Popup(
-        title=title,
-        content=Label(text=message),
-        size_hint=(0.8, 0.3)
-    ).open()
+    Popup(title=title, content=Label(text=message), size_hint=(0.8, 0.3)).open()
