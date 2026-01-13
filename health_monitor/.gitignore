@@ -41,13 +41,15 @@ env/
 Thumbs.db
 desktop.ini
 
-# Database
+# Database files - główna baza i backupy
 *.db
 *.sqlite
 *.sqlite3
 health.db
+*_backup_*.db
+health_backup_*.db
 
-# Buildozer
+# Buildozer dla Android
 .buildozer/
 bin/
 
@@ -66,9 +68,6 @@ htmlcov/
 *.log
 logs/
 
-# Backup files
-*_backup_*.db
-
 # Temporary files
 *.tmp
 *.bak
@@ -82,7 +81,23 @@ logs/
 .gradle/
 local.properties
 
-# Distribution
+# Distribution archives
 *.tar.gz
 *.zip
+
+# PyInstaller
+*.spec
+*.manifest
+
+# Executable files
+*.exe
+*.app
+
+# Backup and export folders
+backups/
+exports/
+
+# Build folders
+build/
+dist/
 
