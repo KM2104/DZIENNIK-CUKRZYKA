@@ -39,6 +39,7 @@ build/
 dist/
 *.exe
 *.spec
+!buildozer.spec
 *.apk
 *.aab
 

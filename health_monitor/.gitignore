@@ -87,6 +87,7 @@ local.properties
 
 # PyInstaller
 *.spec
+!buildozer.spec
 *.manifest
 
 # Executable files
